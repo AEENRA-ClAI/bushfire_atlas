@@ -15,7 +15,7 @@ never fetches a source and never writes green. Janet runs it on the box.
 python -m venv .venv
 .venv/bin/pip install -r requirements-dev.txt
 .venv/bin/python scripts/make_fixture.py --root /tmp/atlas_fixture     # constructed data
-EXTERNAL_DATA_ROOT=/tmp/atlas_fixture .venv/bin/python app.py           # http://127.0.0.1:8622
+EXTERNAL_DATA_ROOT=/tmp/atlas_fixture .venv/bin/python app.py           # http://127.0.0.1:8624
 ```
 
 Point `EXTERNAL_DATA_ROOT` at a real data_library store (the folder that holds `ext_data/green`
@@ -46,7 +46,7 @@ Janet clones the repo into `/data/workspace/bushfire-atlas` and builds its `.ven
 | Git URL | `https://github.com/AEENRA-ClAI/bushfire_atlas` |
 | Path | leave empty: an empty path with a Git URL is what makes Janet clone the repo |
 | Command | `.venv/bin/gunicorn "app:create_app()" --bind {host}:{port} --workers 1 --threads 4` |
-| Port | `8622` |
+| Port | `8624` |
 | Health path | `/healthz` |
 | Environment | `EXTERNAL_DATA_ROOT=/library` |
 | Set it up automatically | ticked |
@@ -57,7 +57,7 @@ add it by hand to the live `apps.yaml`, where `health_path` is written `health: 
 - **Data.** `/library` is the data_library store, mounted read-only into Janet's container.
 - **State.** Janet sets `APP_STATE_DIR=/data/app_state/bushfire-atlas` herself. This version
   writes nothing there.
-- **HTTPS.** Caddy serves the app at its port + 100, which is `https://<box>:8722`.
+- **HTTPS.** Caddy serves the app at its port + 100, which is `https://<box>:8724`.
 - **Private repo.** The GitHub App must be installed on `AEENRA-ClAI/bushfire_atlas`, or the clone
   fails.
 - **Worker count.** Keep one worker: the green read cache lives in the process.

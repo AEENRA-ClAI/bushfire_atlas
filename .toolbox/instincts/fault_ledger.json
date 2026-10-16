@@ -1,0 +1,494 @@
+{
+ "schema": "toolbox/fault_ledger/v1",
+ "note": "The fleet's RECURRING FAULT CLASSES — keyed by CLASS, never by incident. An incident increments a class's occurrences; it does not open a new entry. Each class names the agent that OWNS it (the routing step that had no implementation before 2026-09-22) and the detector that would catch it. Read and written by the fault-analyst persona; audited by the gate-auditor. Distributed via the toolbox `instincts` checkout bundle beside instincts.json.",
+ "why_this_is_not_circle_back": "CIRCLE_BACK.md holds INCIDENTS — 7,017 lines across 211 sections in five repos, MEASURED 2026-09-22 — and it is right to. What it cannot answer is 'how often has this same thing bitten us', because each incident opens a new section. Prose collects; it does not count. This file counts.",
+ "promotion_ladder": {
+  "note": "What stops this becoming a list that only grows. A fault does not live here forever — it graduates into a mechanism and the entry closes, naming what closed it.",
+  "1": "one occurrence — an incident note, wherever that repo keeps them. Not yet a class.",
+  "2": "two or three — a class here, and an instinct in instincts.json whose confidence is DERIVED from the count rather than asserted by whoever wrote it.",
+  "3+": "promote to a MECHANISM — a sweep test, a shared helper, or a line in the owning persona. Then close the entry naming the mechanism. The fleet's own proven move: Herdity's test_nothing_is_built_and_unreachable.py is 'the method instead of the habit'.",
+  "promote_at": 3
+ },
+ "rules": {
+  "note": "These are the requirements-gopher's rules, because this file is the exact shape that rotted before: Herdity's docs/APP_BACKLOG.md carried 44 open markers of which 42 were already done, the same ask up to four times, one item open and closed at once.",
+  "id_never_reused": true,
+  "a_class_appears_exactly_once": true,
+  "a_closed_class_names_what_closed_it": true,
+  "an_occurrence_carries_a_checkable_ref": true,
+  "never_close_on_assumption": "A class that cannot be checked from here stays open, marked unverified. A list that quietly closes things is worse than no list, because it is believed.",
+  "unclassified_is_counted_not_swallowed": "A fault that fits no class is recorded AS unclassified with its evidence. classify_failure's own `unknown` fallback once carried 207 of 208 items — a taxonomy whose catch-all swallows everything is decoration, and the only way to see that is to count it."
+ },
+ "classes": [
+  {
+   "id": "F001",
+   "title": "An empty result and a failed one are indistinguishable",
+   "symptom": "A reader returns [] / {} / a blank page for 'no data', 'the read threw', 'the dependency is missing' and 'I never looked'. The screen looks correct.",
+   "owner": "silent-failure-hunter",
+   "detector": null,
+   "status": "open",
+   "occurrences": [
+    {
+     "date": "2026-09-15",
+     "repo": "data_library",
+     "evidence": "Rba_ExchangeRates landed nothing: its fetcher skipped the chokepoint AND swallowed every diagnostic behind a bare except returning None, so a 403, a consent redirect and a DNS failure read identically. Six more pipelines had the same shape.",
+     "ref": "data_library/CLAUDE.md Rule 12"
+    },
+    {
+     "date": "2026-09-20",
+     "repo": "Herdity",
+     "evidence": "functions/drought.py read green for a BoM source the hub lands in brown; nothing from a green read is indistinguishable from 'that green is not checked out'. A whole country's drought layer could be absent with the Data sources page reporting nothing wrong.",
+     "ref": "Herdity/tests/unit_root_tests/test_a_source_reads_the_tier_it_declares.py"
+    },
+    {
+     "date": "2026-09-21",
+     "repo": "janet_lite",
+     "evidence": "capture_store.read answers [] for an absent file, a damaged file and a machine with no parquet reader alike, so the Sources panel said '0 clips' beside every creator and dropped the 'seen but not followed' list entirely.",
+     "ref": "janet_lite/CLAUDE.md"
+    },
+    {
+     "date": "2026-09-22",
+     "repo": "fleet",
+     "evidence": "60 of 60 tree-walking property sweeps ended in assertEqual(offenders, []) with no scan guard — the same fault class inside the tests written to catch it. MEASURED on test_browser_mode: PASS with ROOTS pointed at a non-existent directory.",
+     "ref": "library/ci_gates/sweep_guard.py"
+    }
+   ]
+  },
+  {
+   "id": "F002",
+   "title": "Built, tested, correct — and called by nothing",
+   "symptom": "A working seam reaches no screen and no caller. Its own tests pass, so nothing is red.",
+   "owner": "feature-health-auditor",
+   "detector": "Herdity/tests/unit_root_tests/test_nothing_is_built_and_unreachable.py",
+   "status": "watched",
+   "note": "PARTIALLY promoted: Herdity has the mechanism, the other four repos do not. Closing this needs the sweep generalised, not just cited.",
+   "occurrences": [
+    {
+     "date": "2026-09-18",
+     "repo": "Herdity",
+     "evidence": "Twelve dark routes found; three were a SECOND entry point to something already on a screen, one (/api/genetics/sibs) was built, correct and simply never wired.",
+     "ref": "Herdity/CLAUDE.md 'The standing check'"
+    },
+    {
+     "date": "2026-09-21",
+     "repo": "janet_lite",
+     "evidence": "creators.note_from_download was written to close exactly the reported gap and had never had a caller — not in the worker, not in a route, not in a test. Its docstring described a promise kept by nothing.",
+     "ref": "janet_lite/CLAUDE.md"
+    },
+    {
+     "date": "2026-09-17",
+     "repo": "Herdity",
+     "evidence": "functions/animal_geo.py sat correct, tested and callable from nothing for a day before /api/animal/<id>/location reached it.",
+     "ref": "Herdity/CLAUDE.md critical-files table"
+    }
+   ]
+  },
+  {
+   "id": "F003",
+   "title": "A missing dependency reads as a code regression",
+   "symptom": "A red suite looks like whatever merged last. Assertions fail as `assert 0 == 4`, never as an import error.",
+   "owner": "housekeeper",
+   "detector": null,
+   "status": "open",
+   "occurrences": [
+    {
+     "date": "2026-09-14",
+     "repo": "data_library",
+     "evidence": "Suite read 49 failed / 4054 passed; installing bs4 + scikit-learn took the same tree to 4 failed / 4269 passed. 45 of the 49 were two absent packages.",
+     "ref": "data_library/CLAUDE.md session bootstrap"
+    },
+    {
+     "date": "2026-09-20",
+     "repo": "Herdity",
+     "evidence": "A fresh container read 16 failed / 158 errors and 225 tests never collected; all 174 were pdfplumber and _cffi_backend.",
+     "ref": "Herdity/CLAUDE.md gate section"
+    },
+    {
+     "date": "2026-09-21",
+     "repo": "Herdity",
+     "evidence": "The HARDER form: a GREEN suite hid it. `OK (skipped=18)` where 12 skips were three missing packages — tests that had never run in that container. A skip is indistinguishable from a pass in the OK line.",
+     "ref": "Herdity/CLAUDE.md session bootstrap"
+    },
+    {
+     "date": "2026-09-22",
+     "repo": "toolbox",
+     "evidence": "`python3 -m pytest tests -q | tail -15` exited 0 with pytest absent — the pipeline returned tail's exit code, so a suite that never ran reported success.",
+     "ref": "this session"
+    }
+   ]
+  },
+  {
+   "id": "F004",
+   "title": "A count written into prose has no mechanism keeping it true",
+   "symptom": "A stated number makes a reader confident about a figure they would otherwise have checked. It goes stale silently.",
+   "owner": "doc-updater",
+   "detector": null,
+   "status": "open",
+   "occurrences": [
+    {
+     "date": "2026-09-21",
+     "repo": "data_library",
+     "evidence": "The producer-types count drifted THREE times (23x6/594 -> 24x14/1799 -> 35x14/3024), each true when written; caught by the housekeeper checking the line against the file, not by a reader.",
+     "ref": "data_library/CLAUDE.md company registers"
+    },
+    {
+     "date": "2026-09-21",
+     "repo": "data_library",
+     "evidence": "The gate paragraph read '4 failed / 5043 passed' for five days after the baseline went empty (6963 passed / 0 failed).",
+     "ref": "data_library/CLAUDE.md gate section"
+    },
+    {
+     "date": "2026-09-21",
+     "repo": "toolbox",
+     "evidence": "The roster paragraph read 73 personas while library/prompts/teams/ held 75, then 77 the same evening.",
+     "ref": "toolbox/CLAUDE.md"
+    },
+    {
+     "date": "2026-09-21",
+     "repo": "Herdity",
+     "evidence": "'TEN other lenses' stood above a list of NINE until deriving it settled the disagreement.",
+     "ref": "Herdity/CLAUDE.md drought row"
+    },
+    {
+     "date": "2026-09-23",
+     "repo": "data_library",
+     "evidence": "A 113-second-per-run saving was reported as \"$188/run, ~$90,000 a year\" by taking the owner's own $100/MINUTE thought experiment, converting seconds to dollars and then multiplying by twice-a-session x 5 days x 48 weeks. Three layers of notional stacked on a hypothetical, presented as money. The owner rejected it in one line — \"but thats 90k that i dobt get value from\" — and the amortised truth is ~$2.50/hour against a $100/minute frame, so the figure ran 2,400x hot. This is F004 with a currency symbol, and money is the worst material for it because a dollar figure is more persuasive than a count. Committed to no artifact (checked); it lived in chat and was withdrawn there. The MECHANISM is the rate documentation in duration_budget.py, which now names four per-resource regimes and says explicitly: on free compute, do NOT annualise.",
+     "ref": "toolbox/library/ci_gates/duration_budget.py (RATE_USD_PER_MIN, the four regimes)"
+    }
+   ]
+  },
+  {
+   "id": "F005",
+   "title": "The same question is answered in several places, and they disagree",
+   "symptom": "Two copies work independently until one moves. The disagreement is silent, and the older copy usually wins where it matters.",
+   "owner": "python-reviewer",
+   "detector": null,
+   "status": "open",
+   "occurrences": [
+    {
+     "date": "2026-09-19",
+     "repo": "data_library",
+     "evidence": "ELEVEN env vars answered headed-vs-headless across fourteen modules in three polarities — and GHG_SELENIUM_HEADED meant the OPPOSITE thing in two of them, forcing headless in the pipeline most likely to be bot-walled.",
+     "ref": "framework/research_pipelines/browser_mode.py"
+    },
+    {
+     "date": "2026-09-19",
+     "repo": "data_library",
+     "evidence": "FIVE places answered 'which search tiers, in what order' and did not agree; the pipeline-side rediscovery had no keyed tier at all and started on the bot wall.",
+     "ref": "framework/research_pipelines/search_mode.py"
+    },
+    {
+     "date": "2026-09-20",
+     "repo": "Herdity",
+     "evidence": "A drought rank table was duplicated in the browser AND a second copy existed in the same file, found by a sweep rather than by eye.",
+     "ref": "Herdity/tests/unit_root_tests/test_no_judgement_lives_in_the_browser.py"
+    },
+    {
+     "date": "2026-09-17",
+     "repo": "Herdity",
+     "evidence": "animal_geo grew a second postcode reader that disagreed with au_postcodes (last-in-file vs averaged, no zero-padding), so a company and an animal at the same postcode landed in different places.",
+     "ref": "Herdity/CLAUDE.md animal_geo row"
+    }
+   ]
+  },
+  {
+   "id": "F006",
+   "title": "A knob that only an exported env var sets dies in every automation",
+   "symptom": "Works on the laptop, silently degrades on the box, in the queue worker and in the scheduled task — and the degradation reads as 'no data'.",
+   "owner": "config-hygiene-engineer",
+   "detector": "smart_analyst/tests/test_zero_env.py",
+   "status": "watched",
+   "note": "PARTIALLY promoted: smart_analyst has the zero-env gate, the other repos do not.",
+   "occurrences": [
+    {
+     "date": "2026-09-09",
+     "repo": "data_library",
+     "evidence": "Igs_Bolt came back honestly-empty TWICE because the run-queue worker never saw the env of the terminal that ran `add`. This is why a work-list now reads the FILE first.",
+     "ref": "framework/Data_ingestion/worklist.py"
+    },
+    {
+     "date": "2026-09-15",
+     "repo": "smart_analyst",
+     "evidence": "The box resolved NO secrets file because only the laptop's D: paths were declared, so the brain reported 'not configured' and the flows engine ran model-less — indistinguishable from the brain being down.",
+     "ref": "smart_analyst/CLAUDE.md standing rule"
+    }
+   ]
+  },
+  {
+   "id": "F007",
+   "title": "The declaration passes while the data does not match it",
+   "symptom": "A contract check reads the DECLARED shape and goes green; the rows themselves are something else. Surfaces months later, often as an unrelated error.",
+   "owner": "database-reviewer",
+   "detector": null,
+   "status": "open",
+   "occurrences": [
+    {
+     "date": "2026-09-17",
+     "repo": "data_library",
+     "evidence": "source_meta.json had declared Fao_Lex partition_key: country_iso3 since it was written; the pipeline never emitted that column, so the partitioner fell back to the raw field and produced a 230-character sixteen-jurisdiction directory. Surfaced as a MAX_PATH file-system error during a drive migration.",
+     "ref": "lib/partitions"
+    },
+    {
+     "date": "2026-09-17",
+     "repo": "data_library",
+     "evidence": "The FIX walked into the same trap in the same commit: a test asserted 'country' was kept verbatim while _insert_provenance overwrote it on the way into green. Declaration check passes; data is replaced.",
+     "ref": "data_library/CLAUDE.md partition section"
+    },
+    {
+     "date": "2026-09-09",
+     "repo": "data_library",
+     "evidence": "Igs_Bolt's first live row landed 12 columns while an honest-EMPTY run landed the full declared set, so `sire` read as MISSING rather than null.",
+     "ref": "tests/test_igs_bolt.py"
+    },
+    {
+     "date": "2026-08-18",
+     "repo": "data_library",
+     "evidence": "111 green tables have no usable rec_vld_dts — validate_pipeline_class checks col_types and passes while the DATA is null.",
+     "ref": "data_library/CLAUDE.md standing facts"
+    }
+   ]
+  },
+  {
+   "id": "F008",
+   "title": "A gate that cannot bite",
+   "symptom": "A test is green forever. It asserts an absence it does not force, scans a tree that moved, or pins a number nobody intends to reach.",
+   "owner": "gate-auditor",
+   "detector": "library/ci_gates/sweep_guard.py",
+   "status": "watched",
+   "note": "ALL FOUR PARTS now have a mechanism, in all five repos. (1) EMPTY SCAN — sweep_guard, 32 sweeps guarded, 31 guard-bitten. (2) ABSTAIN-VS-ASSERT — gate_bite. (3) SKIPS — skip_audit; FOUR repos carry a skip_policy.json. This read \"every repo\" until 2026-09-24, when a fault hunt MEASURED it: toolbox, which AUTHORS skip_audit.py, is the one without. The tool's own home was the gap its own class describes, and the sentence asserting otherwise sat in the note that exists to warn about gates that cannot bite. In data_library the mechanism is also structurally inert — skip_audit reads skips from pytest's -ra summary and that repo's gate omits -ra, so it reports no skips whatever the suite does. (4) CONDITIONAL ASSERTION — ambient_branch, 8 findings fixed, and every repo now gates it at zero with a guard-bite. STILL WATCHED, not closed: gate_bite bites ONE gate and is not general mutation testing, which is the one part with a mechanism that does not generalise. NEW 2026-09-24, ABSTAIN-VS-ASSERT, two fresh instances its own mechanism could not reach: toolbox's tools/mail_archiver/tests/test_outlook_web.py::test_load_selenium_errors_clearly_when_missing opened \"selenium isn't installed in this environment\" and then checked what happens when it isn't — so the MACHINE did the asserting. It passed where selenium was absent, failed where it was present, and had been red on development unnoticed because housekeeping runs gate.py --quick, which skips the step that runs that package. Beside it, test_outlook_shots.py::test_module_imports_without_any_pip_deps made its whole claim in a COMMENT (\"no selenium, opencv, pywin32, pillow needed\") and asserted only that a constant exists; two thirds of it were being answered by the container not having pywin32 or opencv. Fixed by FORCING the condition — a meta-path blocker plus fixtures that assert the fixture itself, because one that silently did nothing would put both tests back where they started. Guard-bitten four ways, each landing on exactly one test. THE LESSON FOR THE MECHANISM: gate_bite bites one GATE, and neither of these was a gate — they were ordinary unit tests resting on an unenforced precondition, which nothing sweeps for. An absence a test needs must be MADE, never hoped for. NEW 2026-09-23: the class reaches beyond gate TESTS — an ad-hoc MEASUREMENT is a sweep too, and an unguarded profiler that ran zero tests in 25 of 194 modules produced a confident, published, wrong diagnosis. A number is not evidence until something has checked that it counted anything.",
+   "occurrences": [
+    {
+     "date": "2026-09-22",
+     "repo": "fleet",
+     "evidence": "60 of 60 tree-walking sweeps pass identically on a zero-file scan. Proven on data_library's test_browser_mode with ROOTS pointed at a directory that does not exist.",
+     "ref": "library/ci_gates/sweep_guard.py"
+    },
+    {
+     "date": "2026-09-16",
+     "repo": "data_library",
+     "evidence": "Three baseline failures were tests ABSTAINING, not passing: test_honest_empty_offline and test_discover_urls_honest_empty_without_browser each asserted an absence they did not enforce, so they passed on a machine that happened to lack egress or Chrome. Fixed by f0855834.",
+     "ref": "data_library/CLAUDE.md gate section"
+    },
+    {
+     "date": "2026-09-22",
+     "repo": "fleet",
+     "evidence": "36 sweeps iterate a HAND-LISTED set of paths, so a file added tomorrow is silently never swept — janet_lite's compileall lesson in test form.",
+     "ref": "this session's scan"
+    },
+    {
+     "date": "2026-09-21",
+     "repo": "janet_lite",
+     "evidence": "compileall -q ran over a hand-listed set AND does not fail on a warning, so jobs.py was compiled every run while carrying an invalid escape sequence no gate ever reported.",
+     "ref": "janet_lite/source_escapes_test.py"
+    },
+    {
+     "date": "2026-09-22",
+     "repo": "data_library",
+     "evidence": "Two of the 11 had a SECOND fault: test_corpus_path globbed 'pipelines/**/*.py' and test_harvest_interval called os.walk('framework'), both CWD-relative, so running the suite from anywhere but the repo root swept zero files and passed. A third, test_fetch_chokepoint, parametrizes over a glob — an empty one generates zero cases, so the gate does not fail, it vanishes from the run.",
+     "ref": "data_library/tests/test_fetch_chokepoint.py::test_the_sweep_has_pipelines_to_sweep"
+    },
+    {
+     "date": "2026-09-22",
+     "repo": "Herdity",
+     "evidence": "test_the_served_app_cannot_fetch is Rule 6's whole mechanism and was unguarded: without a floor it reports 'no route can fetch' having walked no routes at all. A safety claim reads strongest exactly when it is emptiest, which is what makes this the worst class of sweep to leave open.",
+     "ref": "Herdity/tests/unit_root_tests/test_the_served_app_cannot_fetch.py"
+    },
+    {
+     "date": "2026-09-22",
+     "repo": "fleet",
+     "evidence": "The guard-bite harness cried wolf three times before finding anything real: a mistyped class name, a victim directory the sweep does not read, and a unittest invocation needing a package the suite does not have. Each read as a missing guard. This is why a finding ships with its break.",
+     "ref": "data_library/scripts/guard_bite.py"
+    },
+    {
+     "date": "2026-09-22",
+     "repo": "data_library",
+     "evidence": "test_the_browser_rungs_are_gated_too named apeda.gov.in, a host the policy has PERMITTED since the India exclusion was lifted on 2026-09-21 — so the gate was never asked, the test launched a real browser at a live third-party government site every run, and passed because chromedriver 147 could not drive Chrome 141. Asserting the EMPTY RESULT is what hid it: '' is returned by a refusal and by a version mismatch alike. The sibling test was re-pointed the same day; this one was missed.",
+     "ref": "data_library/scripts/gate_bite.py"
+    },
+    {
+     "date": "2026-09-22",
+     "repo": "fleet",
+     "evidence": "Fourteen skips fleet-wide. TWO were faults: Herdity's 'playwright absent' had never run in ANY container (pip install playwright takes that file from Ran 16/skipped 1 to Ran 17/OK, and the class it skips checks the premise the rest of the file rests on), and janet_lite's 'a browser IS available here' was INVERTED — it ran only where a browser was absent, so never on this container, on CI, or on the box.",
+     "ref": "toolbox/library/ci_gates/skip_audit.py"
+    },
+    {
+     "date": "2026-09-22",
+     "repo": "toolbox",
+     "evidence": "skip_audit UNDERCOUNTED on its first real use: 7 skips read from a Herdity run reporting OK (skipped=10), while printing 'every skip is declared'. unittest -v prints a test's DOCSTRING instead of its name, so the parser's anchor missed them. An audit that silently misses what it audits is the fault one level up; it now cross-checks its count against the runner's own and FAILS on a disagreement.",
+     "ref": "toolbox/tests/test_skip_audit.py::TestItChecksItselfAgainstTheRunner"
+    },
+    {
+     "date": "2026-09-22",
+     "repo": "Herdity",
+     "evidence": "test_xlsx_honest_without_openpyxl's WHOLE body sat inside `if not _HAVE_XLSX:`, and _HAVE_XLSX is True — so it ran nothing and reported a PASS, invisible even to the skip count. Adding openpyxl to the bootstrap CORE on 2026-09-21, the fix that un-skipped twelve tests, is exactly what made it dead: REPAIRING AN ENVIRONMENT CAN SILENTLY DISABLE THE TEST WRITTEN FOR THE BROKEN ONE.",
+     "ref": "Herdity/tests/unit_root_tests/test_no_assertion_hides_behind_the_machine.py"
+    },
+    {
+     "date": "2026-09-22",
+     "repo": "data_library",
+     "evidence": "Five tests opened `if find_spec('pandas') is None: return  # pandas optional — honest skip`. A bare return is NOT a skip, it is a PASS: the test vanishes and the summary says it ran, so it never reaches the count the skip audit reads. Converted to pytest.skip and declared as `environment`, which fails the audit if it ever fires.",
+     "ref": "data_library/tests/test_no_assertion_hides_behind_the_machine.py"
+    },
+    {
+     "date": "2026-09-23",
+     "repo": "data_library",
+     "evidence": "THE GUARD'S AUTHOR COMMITTED THE FAULT ONE DAY LATER, in the tool measuring the fault. A hand-rolled per-module profiler over Herdity's 194 test modules invoked each as `python -m unittest tests.unit_root_tests.<name>`, which does not set imports up the way `discover -s` does: 25 modules raised ImportError and ran ZERO tests, in ~0.05s each, which the profiler added to its total as though they were merely fast. A run of nothing and a fast run were indistinguishable in its output. The 692.5s total was then used to conclude Herdity's suite cost was SUPER-ADDITIVE — a diagnosis published in a handover and a PR before an A/B disproved it (20 modules: 48.8s apart, 38.0s together, the same 431 tests; together is FASTER). Re-timed through `discover -p`, the excluded 25 cost 1,469.2s, one of them over 1,200s on its own. The lesson is not 'use the guard in tests': it is that a MEASUREMENT is a sweep, and an unguarded one reports a clean total for a scan that never happened.",
+     "ref": "Herdity/docs/handover/session_2026-09-22_the_gates_that_could_not_bite_2.md"
+    }
+   ]
+  },
+  {
+   "id": "F009",
+   "title": "A list becomes a sediment and is believed anyway",
+   "symptom": "Items appended, never struck. The same ask several times, open and closed at once. A count off the file is inflated, so everyone re-derives the truth from the code.",
+   "owner": "requirements-gopher",
+   "detector": "Herdity/tests/unit_root_tests/test_the_backlog_says_each_thing_once.py",
+   "status": "watched",
+   "occurrences": [
+    {
+     "date": "2026-09-20",
+     "repo": "Herdity",
+     "evidence": "docs/APP_BACKLOG.md held 44 open and 23 shipped markers across 76 item lines; the same ask appeared up to four times; 42 of the 44 open markers were already done, decided against, or belonged in another file.",
+     "ref": "Herdity/CLAUDE.md backlog section"
+    },
+    {
+     "date": "2026-09-22",
+     "repo": "fleet",
+     "evidence": "CIRCLE_BACK.md totals 7,017 lines in 211 sections across five repos, with no mechanism counting how often a class recurs — which is why this ledger exists.",
+     "ref": "this session's scan"
+    }
+   ]
+  },
+  {
+   "id": "F010",
+   "title": "A plausible explanation arriving after the fact is treated as evidence",
+   "symptom": "A diagnosis is withdrawn, or never made, because a confident statement explained the symptom. The statement had an author, not a measurement.",
+   "owner": "verifier",
+   "detector": null,
+   "status": "open",
+   "occurrences": [
+    {
+     "date": "2026-09-20",
+     "repo": "fleet",
+     "evidence": "GitHub Actions stopping was recorded as a SWITCH the owner threw; the email shows a 2,000-minute QUOTA exhausted at the same MINUTE the first run failed. A switch sounds permanent while a quota resets — two repos would have resumed firing on 2026-10-01.",
+     "ref": "data_library/docs/CIRCLE_BACK.md §24"
+    },
+    {
+     "date": "2026-09-19",
+     "repo": "data_library",
+     "evidence": "'Brave's allowance was spent' was asserted and wrong — the meter read 222/1000 with 778 remaining; the real cause was ENRICH_CHAIN never containing Brave at all.",
+     "ref": "pipelines/AbrTriage.py"
+    },
+    {
+     "date": "2026-09-17",
+     "repo": "data_library",
+     "evidence": "m49's `type` field was claimed as the sovereignty disambiguator. Wrong twice over: Norway's type is 'Sovereign country', and MEASURED no two areas share a normalised name at all.",
+     "ref": "functions/country_iso3"
+    },
+    {
+     "date": "2026-09-17",
+     "repo": "data_library",
+     "evidence": "A fabricated KVK profileId was baked in as a Rule 12b default and was WORSE than none — the API 500s on an unknown id, which reads as the server having a bad afternoon, so an unattended run would retry forever.",
+     "ref": "pipelines/Kvk_Register.py"
+    }
+   ]
+  },
+  {
+   "id": "F011",
+   "title": "A failure reaches the user with no page and no record",
+   "symptom": "Something breaks; the screen shows nothing useful or blames the wrong thing, and no log line survives to say what happened.",
+   "owner": "builder",
+   "detector": null,
+   "status": "watched",
+   "raised_by": "owner 2026-09-22: \"there's a 505 error and there was no error page, and then there was no error logging\"",
+   "note": "RAISED, not yet evidenced by a logged incident of its own. The occurrence below is the closest recorded relative — a real failure presented so that the reader was pushed away from the real cause — and it is listed as such rather than as a match, because a class padded with near-misses is how F009 starts. Its first true occurrence closes this note.",
+   "occurrences": [
+    {
+     "date": "2026-09-21",
+     "repo": "janet_lite",
+     "evidence": "The Jobs result panel led with 'That run's result is not readable as JSON' above a perfectly readable markdown report explaining the real failure, so the screen you open BECAUSE a job failed reported a second, false failure and pushed the real one below it.",
+     "ref": "janet_lite/CLAUDE.md"
+    }
+   ]
+  },
+  {
+   "id": "F012",
+   "title": "A detector's first findings are false, and it is switched off within a week",
+   "symptom": "A new sweep or detector is pointed at the tree and reports hundreds of findings, or a handful of confident wrong ones. Nobody triages the second batch. The gate survives as wallpaper or is deleted.",
+   "owner": "gate-auditor",
+   "detector": null,
+   "status": "watched",
+   "raised_by": "Derived 2026-09-24 from five occurrences inside a single session — past the promote-at-three threshold on its own, which is why it is a class rather than five incident notes.",
+   "note": "⚠ NO DETECTOR, DELIBERATELY — and the ledger's own gate enforced that within a minute of this class being written. The first draft put the CONVENTION in the `detector` field as a sentence; `test_a_named_detector_in_this_repo_actually_exists` failed by name, because a prose detector claims a mechanism that does not exist. There is no generic way to detect a detector that is wrong.\n\nTHE MECHANISM IS A TEST-WRITING CONVENTION, NOT A SCRIPT, and that is the honest shape: there is no generic way to detect a detector that is wrong. What there is, is a habit with teeth — HALF of a detector's tests assert the cases that must stay SILENT, written before it is pointed at the tree. `test_duration_budget.py` and `test_no_judgement_lives_in_the_browser.py` both do this and both record why. Two harder lessons sit underneath. FIRST, the fix is never a bigger threshold picked to make today pass: raising a number until the noise stops is indistinguishable from raising it until the detector stops, so the fix has to change the UNIT or the QUESTION (the regression floor moved from an absolute 0.5s to a share of the cap, because an absolute duration means something different on a 1s test and a 60s one). SECOND, a detector that reports NOTHING must be proven to have LOOKED — F008's sweep_guard rule — or 'no findings' and 'no scan' are the same output.",
+   "occurrences": [
+    {
+     "date": "2026-09-22",
+     "repo": "fleet",
+     "evidence": "434 'hardcoded count' plus 92 'no assertion' findings on the first run — fixture assertions and `pytest.raises`, not defects. Narrowed to AST-based detection.",
+     "ref": "toolbox/library/ci_gates/ambient_branch.py"
+    },
+    {
+     "date": "2026-09-22",
+     "repo": "fleet",
+     "evidence": "1,557 of 2,097 findings (74%) flagged as 'unforced absence' were honest-empty tests correctly forcing the condition via constructed input.",
+     "ref": "toolbox/tests/test_ambient_branch.py"
+    },
+    {
+     "date": "2026-09-22",
+     "repo": "Herdity",
+     "evidence": "A vocabulary sweep matched `getAvailableBreedGroups` on the word 'Available'. A vocabulary of ordinary words cannot be swept for by its words.",
+     "ref": "Herdity/tests/unit_root_tests/test_no_judgement_lives_in_the_browser.py"
+    },
+    {
+     "date": "2026-09-22",
+     "repo": "data_library",
+     "evidence": "The guard-bite harness failed every INTACT case — a mistyped class name, a victim directory the sweep does not read, and a unittest invocation needing a package. The harness now prints the intact column so a broken harness is visible before its findings are believed.",
+     "ref": "data_library/scripts/guard_bite.py"
+    },
+    {
+     "date": "2026-09-23",
+     "repo": "data_library",
+     "evidence": "The cost watch's first BAKED GATE run reported two regressions, both false: concurrency tests at 1.04s->2.66s and 1.23s->2.82s, load-sensitive by nature and 0.5% of the run each. The first of these to reach a gate rather than be caught in development.",
+     "ref": "toolbox/tests/test_duration_budget.py::TestTheWatchStopsTheDriftToSeventeenHours"
+    }
+   ]
+  },
+  {
+   "id": "F013",
+   "title": "A test that waits costs that wait forever, and never fails to say so",
+   "symptom": "A suite is slow and nobody can say why. No test is red. The instinct is to blame the test COUNT and prune for redundancy, which saves nothing.",
+   "owner": "tdd-guide",
+   "detector": "library/ci_gates/duration_budget.py",
+   "status": "watched",
+   "raised_by": "owner 2026-09-23: \"is there any way to streamline those, make them faster ... not 7,000 different tests for things that might be looking at the exact same process?\"",
+   "note": "THE PREMISE IS ALWAYS THE OPPOSITE OF THE TRUTH, which is why this is a class and not a performance chore. MEASURED on data_library: 400.8s over 7,061 tests, 184.8s (46.1%) inside time.sleep; the average test is 14.7 ms and 7,021 of them are a quarter of the clock. A suite is not slow because it is big. Pruning 'redundant' tests saves nothing and costs coverage.\n\nA slow test is invisible in a way a broken one is not: it PASSES. And it compounds — a suite is run far more often than it is read.\n\nMECHANISM (duration_budget): Rule 1 meters time.sleep and is MEASURED rather than self-declared, because the author who believed their test was fast is exactly the author who wrote the 65-second one. Rule 2 is a declared wall budget for what Rule 1 cannot see — a loop polling a wall-clock deadline sleeps for none of its 30 seconds. `--hoist` finds a fixture paid per test; `--against` catches drift before a suite becomes 17 hours; `--plan` refuses a run that cannot afford to finish, because a wall BOUNDS a loss and only a quote PREVENTS it.\n\nTWO WAYS TO CHEAT, both blocked deliberately. Deleting the slow test and fixing it read IDENTICALLY on any cost metric (65.5s -> 0 either way), so GONE is its own category and never scores as an improvement. And a run cut short by a budget must never exit 0, or a suite that tested two thirds of itself reads exactly like one that tested all of it.\n\nCLOSED 2026-09-24: the recorder now runs automatically in all five gates. Two things fell out of wiring it. (1) `duration_budget_unittest` returned 0 UNCONDITIONALLY — a failing suite exited 0 — and it was about to be installed behind Herdity's step named 'tests (must be GREEN)'. It shipped because that half had NO test while the pytest half had 71; `tests/test_duration_budget_unittest.py` now covers it, guard-bitten (3 of 8 fail against the old code). A cost meter that silences the test result is worse than no cost meter. (2) 'Herdity, the most expensive suite in the fleet at 7.1 hours' — which this note itself asserted — is STALE. MEASURED 2026-09-24, same repo, same profile, same 411 MB data branch: 3,238 tests in 30.9s. B48 fixed it on 2026-09-21 and the figure outlived the fault. That is an F004 instance inside the F-class note that warns about numbers, and it had a cost: the stale figure talked Herdity's gate out of wiring its own --against watch, on the reasoning that a 7.1-hour run can neither fit a $500 cap nor afford a baseline.",
+   "occurrences": [
+    {
+     "date": "2026-09-23",
+     "repo": "data_library",
+     "evidence": "test_honest_empty_offline[Usda_Wasde] spent 64.74s of its 65.50s inside time.sleep waiting for a chromedriver that could never start, in a suite with no network — 16.0% of the whole suite in ONE test, passing throughout. Caught in the act: pgrep -P showed a live chromedriver CHILD of a test named 'honest_empty_offline'. Blocking the SOCKET does not block a SUBPROCESS. 65.50s -> 0.01s with the browser genuinely forced absent.",
+     "ref": "data_library/tests/conftest.py (no_browser)"
+    },
+    {
+     "date": "2026-09-23",
+     "repo": "data_library",
+     "evidence": "test_kvk_register::TestHonestEmptyOffline paid the pipeline's own production retry backoff (3 tries, 5s then 10s, +1.5s throttle) against a transport already mocked to None. 33.02s -> 0.05s by setting the pipeline's DOCUMENTED env knobs, never its internals.",
+     "ref": "data_library/tests/test_kvk_register.py (no_backoff)"
+    },
+    {
+     "date": "2026-09-23",
+     "repo": "data_library",
+     "evidence": "test_sniff_api_drive burned 30.00s and BELIEVED it had neutered the wait: it patched sniff_api.time.sleep, while the wait lives in stealth.wait_for_human whose `import time as _t` is FUNCTION-LOCAL. Patching time.sleep globally does not help either (MEASURED, still 30.00s) because the loop polls a wall-clock DEADLINE. The deadline was the only seam.",
+     "ref": "data_library/scripts/sniff_api.py (SNIFF_DRIVE_FALLBACK_S)"
+    },
+    {
+     "date": "2026-09-23",
+     "repo": "Herdity",
+     "evidence": "One module carried 18.34s of SETUP — 59% of its 31.0s, and more than data_library's entire 7,061-test suite (9.9s). Three setUpClass hoists worth 12.4s with no assertion touched. The all_animals shape: 2.26s uncached, paid once per test.",
+     "ref": "Herdity/docs/handover/session_2026-09-23_the_recorder_reaches_the_suite_it_was_built_for.md"
+    }
+   ]
+  }
+ ],
+ "unclassified": [],
+ "generated_at": null
+}

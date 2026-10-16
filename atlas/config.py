@@ -14,9 +14,10 @@ from pathlib import Path
 # <root>/ext_data/green/<Source>/... and polygons are <root>/map_layers/<source>.geojson.
 DEFAULT_DATA_ROOT = "/library"
 
-# 8622: the next port after the last one pinned in janet_lite's apps.example.yaml (8621),
-# inside the 8611-8630 range Caddy serves over TLS at port + 100 (janet_lite config.py).
-DEFAULT_PORT = 8622
+# 8624: the first port free in janet_lite's apps.example.yaml on 2026-10-16 (8622 is the
+# health app, 8623 slumber), inside the 8611-8630 range Caddy serves over TLS at port + 100
+# (janet_lite config.py), so https is 8724.
+DEFAULT_PORT = 8624
 DEFAULT_HOST = "127.0.0.1"
 
 # Linker defaults. These are JUDGEMENTS, not measurements (needs_verification): they are the
