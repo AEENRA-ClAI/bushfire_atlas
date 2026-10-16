@@ -23,6 +23,11 @@ STANDARD_COLUMNS = (
     "status_source", "incident_type", "incident_type_source", "size_ha", "rec_vld_dts",
 )
 
+# Read when present, never required. `row_key` is the hub's own key for a row (data_library
+# docs/features/bushfire.md): the blue layer truncates rec_vld_dts to the day, so a key rebuilt
+# from it cannot match the map layer's features.
+OPTIONAL_COLUMNS = ("row_key",)
+
 
 def _num(value: Any) -> float:
     """A float, or NaN for a blank / None / non-number. Never 0 for a missing value."""
@@ -109,10 +114,12 @@ class Record:
     incident_type_source: str
     size_ha: float
     rec_vld_dts: Optional[datetime]
+    green_row_key: str = ""        # the hub's row_key when green carries it
 
     @property
     def key(self) -> str:
-        return row_key(self.source_name, self.source_record_id, self.rec_vld_dts)
+        return self.green_row_key or row_key(self.source_name, self.source_record_id,
+                                             self.rec_vld_dts)
 
     @property
     def has_point(self) -> bool:
@@ -198,4 +205,5 @@ def record_from_row(row: Mapping[str, Any]) -> Record:
         incident_type_source=_text(row.get("incident_type_source")),
         size_ha=_num(row.get("size_ha")),
         rec_vld_dts=to_utc(row.get("rec_vld_dts")),
+        green_row_key=_text(row.get("row_key")),
     )

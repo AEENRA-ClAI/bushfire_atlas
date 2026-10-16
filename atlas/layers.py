@@ -23,11 +23,13 @@ def _norm(key: str) -> str:
 
 
 def key_variants(rec: Record) -> List[str]:
-    """The row key in the renderings a writer might use for the timestamp.
+    """The keys to look a member up by in its source's map layer.
 
-    UNVERIFIED: the hub's exact rendering is set by data_library _bushfire_geo.py, not landed
-    when this was written. Comparing with punctuation stripped makes '|' vs '_' and '-' vs ''
-    the same; the T/space and the trailing zero fraction are tried both ways."""
+    A green row that carries the hub's `row_key` is matched on it alone (MEASURED on
+    Qfd_BushfireAlert, 2026-10-16: `source|id|time` to the second). Without it, the key is rebuilt
+    from rec_vld_dts in the renderings a writer might use, compared with punctuation stripped."""
+    if rec.green_row_key:
+        return [_norm(rec.green_row_key)]
     base = f"{rec.source_name}{rec.source_record_id}"
     if rec.rec_vld_dts is None:
         return [_norm(base)]

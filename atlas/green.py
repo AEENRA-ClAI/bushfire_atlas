@@ -23,7 +23,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Callable, Dict, List, Optional, Tuple
 
-from .records import STANDARD_COLUMNS, Record, iso, record_from_row, to_utc
+from .records import OPTIONAL_COLUMNS, STANDARD_COLUMNS, Record, iso, record_from_row, to_utc
 
 NO_DATA_MOUNTED, NO_GREEN, NO_SOURCES, OK = "no_data_mounted", "no_green", "no_sources", "ok"
 READ, NOT_READ = "read", "not_read"
@@ -271,7 +271,7 @@ class GreenReader:
             if src.state != READ:
                 continue
             adapter = ADAPTERS.get(src.source_name)
-            columns = adapter.columns if adapter else STANDARD_COLUMNS
+            columns = adapter.columns if adapter else STANDARD_COLUMNS + OPTIONAL_COLUMNS
             files = parquet_files(src.folder)
             if adapter and adapter.date_partition:
                 files = [f for f in files if _in_date_window(f, adapter.date_partition, lo, hi)]
