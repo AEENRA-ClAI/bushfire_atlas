@@ -1,0 +1,420 @@
+/* =============================================================================
+ * table_kit.css — the look + the three layouts for table_kit.js (owner 2026-09-26).
+ * CANONICAL HOME: toolbox library/ui/table_kit/. Checked out into each app — edit HERE.
+ *
+ * It inherits the app's font and colours. An app tunes it with four variables, set on
+ * :root (or any ancestor) in its OWN stylesheet — never by editing this file:
+ *   --tk-bg      the surface behind a table (the sticky column and cards paint it)
+ *   --tk-line    borders and dividers
+ *   --tk-muted   the secondary text (counts, card labels)
+ *   --tk-accent  the ticked-row tint and the focus ring
+ *   --tk-sticky-bg  what the pinned first column paints when a table scrolls sideways;
+ *                   it should MATCH what the table sits on (defaults to --tk-bg)
+ * The defaults read in both light and dark schemes. They are declared under
+ * :where(:root) — zero specificity — so an app's own :root values win whatever order
+ * the stylesheets load in (a plain :root here silently beat an app's theme when this
+ * file loaded last: Janet's ticked rows came out blue instead of her orange).
+ * =========================================================================== */
+
+:where(:root) {
+  --tk-bg: Canvas;
+  --tk-line: color-mix(in srgb, currentColor 18%, transparent);
+  --tk-muted: color-mix(in srgb, currentColor 62%, transparent);
+  --tk-accent: #3b82f6;
+}
+
+/* -------------------------------------------------- the page-width guard ---- */
+/* A flex/grid child that would have grown to the table's width may shrink. */
+.tk-shrink { min-width: 0; }
+
+/* Every table sits in its OWN sideways scroll box, so the page never pans. */
+.tk-wrap {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: visible;
+  overscroll-behavior-x: contain;         /* a sideways flick stops at the table's edge */
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+.tk-wrap > table.tk { min-width: 100%; }
+
+/* edge fades: there is more to the right / left */
+.tk-wrap.tk-more-right {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+          mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+}
+.tk-wrap.tk-more-left.tk-more-right {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 20px, #000 calc(100% - 28px), transparent);
+          mask-image: linear-gradient(to right, transparent, #000 20px, #000 calc(100% - 28px), transparent);
+}
+.tk-wrap.tk-more-left:not(.tk-more-right) {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 20px);
+          mask-image: linear-gradient(to right, transparent, #000 20px);
+}
+
+/* "7 more columns →": the words that the edge fade alone could not say */
+.tk-more-cols {
+  display: block; margin: 0 0 .25rem auto; font: inherit; font-size: .8em;
+  color: var(--tk-accent); background: transparent; border: 0; padding: .15rem .1rem; cursor: pointer;
+}
+.tk-more-cols[hidden] { display: none; }
+@media (pointer: coarse) { .tk-more-cols { min-height: 32px; } }
+
+/* MEDIUM: overflowing → the first real column stays put while the rest scrolls */
+.tk-wrap.tk-overflow > table.tk:not(.tk-cards) tr > :first-child:not(.tk-pick),
+.tk-wrap.tk-overflow > table.tk:not(.tk-cards) tr > .tk-pick + * {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--tk-sticky-bg, var(--tk-bg));
+}
+.tk-wrap.tk-overflow > table.tk:not(.tk-cards) tr > .tk-pick {
+  position: sticky; left: 0; z-index: 2; background: var(--tk-sticky-bg, var(--tk-bg));
+}
+.tk-wrap.tk-overflow > table.tk:not(.tk-cards) tr > .tk-pick + * { left: 2.1rem; }
+
+/* ------------------------------------------------------------- the toolbar -- */
+.tk-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .4rem .5rem;
+  margin: .35rem 0 .45rem;
+  font-size: .875em;
+  max-width: 100%;
+}
+.tk-search {
+  flex: 1 1 14rem;
+  min-width: 0;
+  max-width: 26rem;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--tk-line);
+  border-radius: 6px;
+  padding: .4rem .6rem;
+}
+.tk-sort {
+  font: inherit; color: inherit; background: transparent;
+  border: 1px solid var(--tk-line); border-radius: 6px; padding: .35rem .4rem;
+  max-width: 13rem;
+  display: none;                     /* headings sort on a wide table… */
+}
+.tk-tools-cards .tk-sort { display: inline-block; }   /* …cards have no headings */
+.tk-count { color: var(--tk-muted); white-space: nowrap; }
+.tk-sel { display: inline-flex; gap: .3rem; }
+.tk-btn {
+  font: inherit; color: inherit; background: transparent; cursor: pointer;
+  border: 1px solid var(--tk-line); border-radius: 6px; padding: .3rem .6rem;
+  white-space: nowrap;
+}
+.tk-btn:hover { border-color: currentColor; }
+.tk-search:focus-visible, .tk-sort:focus-visible, .tk-btn:focus-visible,
+table.tk th.tk-sortable:focus-visible {
+  outline: 2px solid var(--tk-accent); outline-offset: 1px;
+}
+
+/* ---------------------------------------------------------- the table body -- */
+table.tk tr.tk-hidden, table.tk tr.tk-paged { display: none !important; }
+
+/* the pager under a long table: never more than about two screens of rows at once */
+.tk-pager {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .5rem;
+  margin: .45rem 0 .6rem; font-size: .875em;
+}
+.tk-page-info { color: var(--tk-muted); white-space: nowrap; min-width: 7.5em; text-align: center; }
+.tk-pager .tk-all { margin-left: auto; }
+.tk-btn:disabled { opacity: .4; cursor: default; }
+@media (pointer: coarse) { .tk-pager .tk-btn { min-height: 44px; } }
+.tk-tools-cards ~ .tk-pager .tk-btn { min-height: 44px; }
+table.tk th.tk-sortable { cursor: pointer; user-select: none; }
+table.tk th.tk-sortable::after {
+  content: "↕"; opacity: .28; margin-left: .3em; font-size: .85em; font-weight: normal;
+}
+table.tk th[aria-sort="ascending"]::after  { content: "↑"; opacity: .9; }
+table.tk th[aria-sort="descending"]::after { content: "↓"; opacity: .9; }
+table.tk .tk-pick { width: 2.1rem; min-width: 2.1rem; text-align: center; padding-left: .25rem; padding-right: .25rem; cursor: pointer; }
+table.tk .tk-pick input { width: 1.05rem; height: 1.05rem; margin: 0; cursor: pointer; }
+table.tk tr.tk-ticked > td { background-color: color-mix(in srgb, var(--tk-accent) 10%, transparent); }
+
+/* =========================================================================== *
+ * NARROW: every row is a card. Chosen by the table's own width (split screen),
+ * never by the device.
+ * =========================================================================== */
+.tk-wrap.tk-wrap-cards { overflow-x: visible; }
+table.tk.tk-cards,
+table.tk.tk-cards > tbody,
+table.tk.tk-cards > tbody > tr,
+table.tk.tk-cards > tbody > tr > td,
+table.tk.tk-cards > tbody > tr > th,
+table.tk.tk-cards > tfoot,
+table.tk.tk-cards > tfoot > tr,
+table.tk.tk-cards > tfoot > tr > td {
+  display: block;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: 100%;
+}
+table.tk.tk-cards { border: 0; background: transparent; min-width: 0 !important; }
+table.tk.tk-cards > thead { display: none; }
+table.tk.tk-cards > caption { display: block; text-align: left; }
+table.tk.tk-cards > tbody > tr {
+  position: relative;
+  border: 1px solid var(--tk-line);
+  border-radius: 10px;
+  margin: 0 0 .6rem;
+  padding: .45rem .7rem;
+  background: var(--tk-bg);
+}
+/* label on the left, the cell's content flowing as ONE line of text on the right.
+   Not a grid: in a grid every child of the cell becomes its own row, so "<b>Name</b>
+   <a>↗</a>" or a status dot and its word split onto separate lines (Herdity, movie_maker).
+   The label floats in the cell's left padding; flow-root keeps a tall label inside. */
+table.tk.tk-cards > tbody > tr > td,
+table.tk.tk-cards > tbody > tr > th {
+  display: flow-root;
+  padding-left: var(--tk-label-w, 7rem) !important;
+  text-align: left !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--tk-line) !important;
+  /* top/right/bottom only: a `padding` shorthand here would zero the left gutter set
+     above, and every label (floated into that gutter) would sit off the card's left
+     edge — MEASURED 2026-10-10 on movie_maker at 390px, labels cut to "S IT", "CT". */
+  padding-top: .35rem !important;
+  padding-right: 0 !important;
+  padding-bottom: .35rem !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+table.tk.tk-cards > tbody > tr > :last-child { border-bottom: 0 !important; }
+table.tk.tk-cards > tbody > tr > td::before,
+table.tk.tk-cards > tbody > tr > th::before {
+  content: attr(data-label);
+  float: left;
+  /* ONE length for the gutter and the label (owner 2026-10-12: "a little too much padding to
+     the left side"). Both were min(38%, 11rem), but the cell's 38% is of the row and the
+     label's is of the cell, so at 390px a 74px label sat in a 135px gutter: 51px empty before
+     every label (MEASURED in Chromium on Janet). An app may set --tk-label-w on :root. */
+  width: calc(var(--tk-label-w, 7rem) - .6rem);
+  margin-left: calc(-1 * var(--tk-label-w, 7rem));
+  box-sizing: border-box;
+  padding-right: .6rem;
+  color: var(--tk-muted);
+  font-size: .82em;
+  font-weight: 600;
+  line-height: 1.35;
+  padding-top: .1em;
+  /* the cell breaks anywhere so a long value cannot widen the card; the label must
+     not inherit that, or a narrow card reads "PROJEC T" (MEASURED 2026-10-10). */
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: auto;
+}
+/* a cell with no column name (an actions column) spans the card */
+table.tk.tk-cards > tbody > tr > td:not([data-label]),
+table.tk.tk-cards > tbody > tr > td[data-label=""] { padding-left: 0 !important; }
+table.tk.tk-cards > tbody > tr > td:not([data-label])::before,
+table.tk.tk-cards > tbody > tr > td[data-label=""]::before { content: none; }
+/* the tick box sits in the card's corner, not as a labelled line */
+table.tk.tk-cards > tbody > tr > td.tk-pick {
+  position: absolute; top: .45rem; right: .5rem;
+  display: block; width: auto; min-width: 0; padding: 0 !important; border: 0 !important;
+}
+table.tk.tk-cards > tbody > tr > td.tk-pick::before { content: none; }
+table.tk.tk-cards > tbody > tr:has(> td.tk-pick) > td.tk-pick + * { padding-right: 2rem !important; }
+table.tk.tk-cards > tbody > tr.tk-note > td { padding-left: 0 !important; }
+/* a detail row reads as the bottom of its row's card */
+table.tk.tk-cards > tbody > tr.tk-attached {
+  margin-top: -.7rem; border-top-style: dashed; border-radius: 0 0 10px 10px;
+}
+table.tk.tk-cards > tbody > tr.tk-note > td::before { content: none; }
+/* anything inside a cell that insists on a width gives way — a nowrap badge or chip
+   is clipped with an ellipsis instead of spilling past the card (measured: 23-27px
+   over on the data_library dashboards). .tk-clip does the same on any wide table. */
+table.tk.tk-cards td > *, table.tk.tk-cards th > * { max-width: 100%; min-width: 0; }
+/* inline text only — a block (a fold-out, a pop-up) inside a cell must never be clipped */
+table.tk.tk-cards td > :is(span, a, code, b, strong, em, small, mark, abbr, kbd, time),
+table.tk .tk-clip {
+  overflow: hidden; text-overflow: ellipsis; vertical-align: bottom;
+}
+table.tk.tk-cards img, table.tk.tk-cards svg, table.tk.tk-cards canvas { height: auto; }
+
+/* a long card shows its first six fields until tapped */
+table.tk.tk-cards > tbody > tr.tk-long { cursor: pointer; }
+table.tk.tk-cards:not(.tk-has-pick) > tbody > tr.tk-long:not(.tk-open) > :nth-child(n+7),
+table.tk.tk-cards.tk-has-pick > tbody > tr.tk-long:not(.tk-open) > :nth-child(n+8) { display: none !important; }
+table.tk.tk-cards > tbody > tr.tk-long:not(.tk-open) > :nth-child(6),
+table.tk.tk-cards.tk-has-pick > tbody > tr.tk-long:not(.tk-open) > :nth-child(7) { border-bottom: 0 !important; }
+table.tk.tk-cards > tbody > tr.tk-long::after {
+  content: "+ " attr(data-tk-more) " more — tap to show";
+  display: block; padding-top: .35rem; font-size: .82em; color: var(--tk-accent);
+}
+table.tk.tk-cards > tbody > tr.tk-long.tk-open::after { content: "Show less"; }
+
+/* a finger, not a mouse pointer: controls ≥ 44px, tick boxes ≥ 24px (WCAG 2.5.8) —
+   on any touch screen, and on any table shown as cards */
+@media (pointer: coarse) {
+  .tk-btn, .tk-search, .tk-sort { min-height: 44px; }
+  table.tk .tk-pick input { width: 1.5rem; height: 1.5rem; }
+  table.tk .tk-pick { width: 2.6rem; min-width: 2.6rem; }
+  .tk-wrap.tk-overflow > table.tk:not(.tk-cards) tr > .tk-pick + * { left: 2.6rem; }
+}
+.tk-tools-cards .tk-btn, .tk-tools-cards .tk-search, .tk-tools-cards .tk-sort { min-height: 44px; }
+table.tk.tk-cards .tk-pick input { width: 1.5rem; height: 1.5rem; }
+
+/* WIDTH vs DEPTH in cards: a low-priority column goes; a long-text column stays,
+   full width, in its own bounded scroll box (label pinned at its top) */
+table.tk.tk-cards > tbody > tr > td.tk-narrow-hide { display: none !important; }
+table.tk.tk-cards > tbody > tr > td.tk-scroll,
+table.tk.tk-cards > tbody > tr.tk-long:not(.tk-open) > td.tk-scroll {
+  display: block !important;
+  box-sizing: border-box;
+  max-height: min(50vh, 26rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--tk-line) !important;
+  border-radius: 8px;
+  padding: 0 .6rem .5rem !important;
+  margin: .35rem 0;
+}
+table.tk.tk-cards > tbody > tr > td.tk-scroll { padding-left: .6rem !important; }
+table.tk.tk-cards > tbody > tr > td.tk-scroll::before {
+  display: block;
+  float: none; width: auto; margin-left: 0;
+  position: sticky; top: 0; z-index: 1;
+  background: var(--tk-bg);
+  padding: .4rem 0 .3rem;
+  margin-bottom: .2rem;
+}
+
+@media print {
+  .tk-tools { display: none; }
+  .tk-wrap { overflow: visible; -webkit-mask-image: none; mask-image: none; }
+}
+
+/* a SHORT table kept as a table on a narrow box: its cells may wrap, whatever the app's own
+   stylesheet says, so a long label takes a second line instead of the table going to cards */
+table.tk.tk-tight > thead > tr > th,
+table.tk.tk-tight > tbody > tr > td,
+table.tk.tk-tight > tbody > tr > th { white-space: normal !important; }
+
+
+/* =========================================================================== *
+ * THE CLEAN LOOK (owner 2026-10-12: a set of dashboard references — "these are cleaner
+ * tables … structured a bit better across the app … another chat actually also needs to use
+ * this"). Opt-in, for the whole page: <html data-tk-look="clean">. It changes the LOOK only;
+ * the layouts, filter, sort and ticks above are untouched. What it does:
+ *   - the table sits in a soft rounded box with one hairline, never a grid of cell borders;
+ *   - headings are small, muted, upper-case and spaced, on one hairline;
+ *   - rows are taller, divided by a fainter hairline, the last row by none, with a hover tint;
+ *   - the toolbar's controls share one height and one radius;
+ *   - a phone card is the same rounded box;
+ *   - `.tk-pill` (+ tk-ok / tk-warn / tk-bad / tk-info) is one status pill for any app.
+ * Colours still come from the four --tk-* variables, plus three optional ones:
+ *   --tk-surface   the box behind the table (defaults to --tk-bg)
+ *   --tk-head-bg   behind the headings; must be opaque if they stick (defaults to --tk-surface)
+ *   --tk-radius    the box's corner (defaults to 12px)
+ * Every selector starts with :root[data-tk-look~="clean"], so it outranks an app's own
+ * `.data-table th` without !important, and a page that does not opt in is unchanged.
+ * =========================================================================== */
+:root[data-tk-look~="clean"] .tk-wrap:not(.tk-wrap-cards) {
+  border: 1px solid var(--tk-line);
+  border-radius: var(--tk-radius, 12px);
+  background: var(--tk-surface, var(--tk-bg));
+}
+:root[data-tk-look~="clean"] table.tk:not(.tk-cards) {
+  border-collapse: separate; border-spacing: 0; border: 0; background: transparent;
+}
+:root[data-tk-look~="clean"] table.tk:not(.tk-cards) > thead > tr > th {
+  font-size: .7rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--tk-muted); text-align: left; vertical-align: bottom;
+  padding: .7rem .7rem .55rem;
+  background: var(--tk-head-bg, var(--tk-surface, var(--tk-bg)));
+  border: 0; border-bottom: 1px solid var(--tk-line); box-shadow: none;
+}
+:root[data-tk-look~="clean"] table.tk:not(.tk-cards) > tbody > tr > td,
+:root[data-tk-look~="clean"] table.tk:not(.tk-cards) > tbody > tr > th {
+  padding: .7rem .7rem; vertical-align: middle;
+  border: 0; border-bottom: 1px solid color-mix(in srgb, var(--tk-line) 55%, transparent);
+}
+:root[data-tk-look~="clean"] table.tk:not(.tk-cards) > tbody > tr:last-child > td,
+:root[data-tk-look~="clean"] table.tk:not(.tk-cards) > tbody > tr:last-child > th { border-bottom: 0; }
+:root[data-tk-look~="clean"] table.tk:not(.tk-cards) > tbody > tr:hover > td {
+  background-color: color-mix(in srgb, currentColor 4%, transparent);
+}
+:root[data-tk-look~="clean"] table.tk:not(.tk-cards) > tbody > tr.tk-ticked > td {
+  background-color: color-mix(in srgb, var(--tk-accent) 10%, transparent);
+}
+/* the toolbar: one height, one radius, the search box first and widest */
+:root[data-tk-look~="clean"] .tk-tools { gap: .45rem .5rem; margin: .4rem 0 .55rem; }
+:root[data-tk-look~="clean"] .tk-search,
+:root[data-tk-look~="clean"] .tk-sort,
+:root[data-tk-look~="clean"] .tk-btn {
+  min-height: 2.25rem; border-radius: 8px; background: var(--tk-surface, var(--tk-bg));
+}
+:root[data-tk-look~="clean"] .tk-search { padding: .4rem .7rem; }
+/* a phone card: the same rounded box */
+:root[data-tk-look~="clean"] table.tk.tk-cards > tbody > tr {
+  border-radius: var(--tk-radius, 12px); padding: .55rem .85rem;
+  background: var(--tk-surface, var(--tk-bg));
+}
+:root[data-tk-look~="clean"] table.tk.tk-cards > tbody > tr > td::before,
+:root[data-tk-look~="clean"] table.tk.tk-cards > tbody > tr > th::before {
+  font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; padding-top: .2em;
+}
+
+/* WEIGHT (owner, same day: "the heaviness of the fonts"): cells are regular, a cell's own
+   bold is softened to 600, the first column is the row's name at 500, headings 600 but small */
+:root[data-tk-look~="clean"] table.tk > tbody > tr > td { font-weight: 400; }
+:root[data-tk-look~="clean"] table.tk > tbody > tr > td :is(strong, b) { font-weight: 600; }
+:root[data-tk-look~="clean"] table.tk:not(.tk-cards) > tbody > tr > td:first-child:not(.tk-pick),
+:root[data-tk-look~="clean"] table.tk:not(.tk-cards) > tbody > tr > td.tk-pick + td { font-weight: 500; }
+/* BUTTONS AND DROP-DOWNS (same day: "how the buttons and the dropdowns look relative to
+   everything else"): inside a table, and in the toolbar, they are quiet — one small height,
+   the table's own font size, a hairline, no capitals, no shadow — so the data leads and the
+   controls follow. An app's primary button (.btn-primary, [type=submit]) keeps its colour. */
+:root[data-tk-look~="clean"] table.tk td :is(button, select, a.btn),
+:root[data-tk-look~="clean"] .tk-tools :is(button, select) {
+  font: inherit; font-size: .82rem; font-weight: 500; letter-spacing: 0; text-transform: none;
+  line-height: 1.2; min-height: 2rem; padding: .25rem .65rem; border-radius: 8px;
+  border: 1px solid var(--tk-line); box-shadow: none;
+}
+:root[data-tk-look~="clean"] table.tk td :is(button, a.btn):not(.btn-primary):not([type=submit]),
+:root[data-tk-look~="clean"] .tk-tools button {
+  background: transparent; color: inherit;
+}
+:root[data-tk-look~="clean"] table.tk td :is(button, a.btn):not(.btn-primary):not([type=submit]):hover {
+  border-color: var(--tk-accent); color: var(--tk-accent);
+}
+:root[data-tk-look~="clean"] table.tk td select,
+:root[data-tk-look~="clean"] .tk-tools select { padding-right: 1.6rem; max-width: 100%; }
+:root[data-tk-look~="clean"] .tk-search { font-size: .85rem; }
+/* COLUMN SPACING (same day: "the spacing on different table columns"): the outer columns
+   breathe away from the box's edge, numbers sit right in tabular figures, a column of only
+   buttons stays as narrow as its buttons at the row's end, the tick column hugs its box. */
+:root[data-tk-look~="clean"] table.tk:not(.tk-cards) tr > :first-child:not(.tk-pick) { padding-left: 1rem; }
+:root[data-tk-look~="clean"] table.tk:not(.tk-cards) tr > :last-child { padding-right: 1rem; }
+:root[data-tk-look~="clean"] table.tk:not(.tk-cards) tr > .tk-pick { padding-left: .9rem; padding-right: .2rem; }
+:root[data-tk-look~="clean"] table.tk:not(.tk-cards) :is(td, th).tk-num {
+  text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+/* right-aligned, never held on one line: a row of buttons that cannot fit wraps rather than
+   push the table past its box (MEASURED on Janet's standing agents at 1024px: 50px over) */
+:root[data-tk-look~="clean"] table.tk:not(.tk-cards) :is(td, th).tk-act { text-align: right; }
+:root[data-tk-look~="clean"] table.tk:not(.tk-cards) td.tk-act :is(button, select, a) { margin-left: .25rem; }
+
+/* one status pill, for any app (with or without the clean look) */
+.tk-pill {
+  display: inline-flex; align-items: center; gap: .35em; white-space: nowrap;
+  padding: .12rem .55rem; border-radius: 999px; font-size: .78em; font-weight: 600;
+  line-height: 1.5; color: var(--tk-muted);
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+.tk-pill::before { content: ""; width: .45em; height: .45em; border-radius: 50%; background: currentColor; }
+.tk-pill.tk-ok   { color: var(--tk-ok, #1f9d55); }
+.tk-pill.tk-warn { color: var(--tk-warn, #d4880f); }
+.tk-pill.tk-bad  { color: var(--tk-bad, #d64545); }
+.tk-pill.tk-info { color: var(--tk-accent); }

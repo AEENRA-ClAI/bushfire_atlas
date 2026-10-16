@@ -1,0 +1,285 @@
+{
+  "app": "bushfire_atlas",
+  "generated_at": "2026-10-16T18:29:17+00:00",
+  "source": "toolbox",
+  "bundles": {
+    "instincts": {
+      "version": 15,
+      "kind": "memory",
+      "files": [
+        {
+          "file": "FLEET_DECISIONS.md",
+          "sha256": "57c08cdca09bd107fb65e93219d6302a5436d94abdcec486cd8bc9078d694dec"
+        },
+        {
+          "file": "HANDOVER_TEMPLATE.md",
+          "sha256": "323b12f96449b2467ebf73f72585bc3eeee8b4477dc5fe62a1a1b9a81eb6da07"
+        },
+        {
+          "file": "README.md",
+          "sha256": "14072f3e1927ed499a830440d84f8a4eea7153724c19c983ecb2a404014966f2"
+        },
+        {
+          "file": "SESSION_WORKFLOW.md",
+          "sha256": "502e2a96376c71f616e4d2bb631128b3cdad35f86f1621e6f71fc1a4da8e9678"
+        },
+        {
+          "file": "WRITING_GOOD_CODE.md",
+          "sha256": "9e8c4e44a1b6fab055c3d317c914154634b616e1d85db257371c688fd5ddb0aa"
+        },
+        {
+          "file": "copy_paste.py",
+          "sha256": "8b69c9c7b57d8861cfac0e80638b9d9692e8da07d20ba25ec2c865b5afc255ef"
+        },
+        {
+          "file": "doc_records.py",
+          "sha256": "ea5e247fc385bb2b4455cfa952ab5ba1262b1f56a356db42496583f3f56f4057"
+        },
+        {
+          "file": "fault_ledger.json",
+          "sha256": "7515f46af1313438b3985acdff4332afd5d3fb6df07b68766df1a757f9bef5ce"
+        },
+        {
+          "file": "fault_report.py",
+          "sha256": "240626613db3bd8d6f640fdd07ba8ba7365e76288458471717eef0fe48cb63ea"
+        },
+        {
+          "file": "handover.py",
+          "sha256": "a97d855769b07f65eec51d96700aff5d7cda88bb99e2f257b0ba019a03c86ae4"
+        },
+        {
+          "file": "inject.py",
+          "sha256": "a7f85cdda73c96e13c4bc9785f822e837bbc4bf43a549a51083667fd49b1661b"
+        },
+        {
+          "file": "instincts.json",
+          "sha256": "de6c5419e9a0dab9114980d8c44ed0ad5fba2b7c679ccee965c94425b9a95636"
+        },
+        {
+          "file": "merge_guard.py",
+          "sha256": "132fddd63862507fb01f5e43ad9933fbfa4205a99d3019524d6ebbd0b79e07ff"
+        },
+        {
+          "file": "session_end.py",
+          "sha256": "d86f387db04ab16d8572692f128ccf3e5d95fca529fca2da0340526b5a992c81"
+        },
+        {
+          "file": "session_start.py",
+          "sha256": "414f8b57930ae63620f726680ce7e10ea0c7ca23c0c5f3fed7a9de0997a406c6"
+        }
+      ]
+    },
+    "pm": {
+      "version": "1.0",
+      "kind": "tool",
+      "files": [
+        {
+          "file": "PROJECT_FORMAT.md",
+          "sha256": "039a73ab1b56802e961b1d051a1b771c375dde03fa47dca77a5043c05257979e"
+        },
+        {
+          "file": "README.md",
+          "sha256": "78cfbc0426c03b1cac6bbed3bf649031f215e9dc4bd0497ab2d048d740d8bc9a"
+        },
+        {
+          "file": "pm.py",
+          "sha256": "aca6de1fcb07c87433d821a70ff06479c0606759f70f7b012a0f8a2141c0e98d"
+        }
+      ]
+    },
+    "ci_gates": {
+      "version": 2,
+      "kind": "tool",
+      "files": [
+        {
+          "file": "ambient_branch.py",
+          "sha256": "a66147cefc713e798685e8db538bd44dd18ed29533ab9ebc2ec1dcdafdac0904"
+        },
+        {
+          "file": "backlog_check.py",
+          "sha256": "01047297b11a39998fb752e9154f14e30db47c281bd89fa13ba368955dea22cb"
+        },
+        {
+          "file": "ci_baseline.py",
+          "sha256": "e384bc61946658e1f4159748f3d1abbff6d3b246782d1808516a0dfb275a1b27"
+        },
+        {
+          "file": "duration_budget.py",
+          "sha256": "211592fddc0fa0313bf852b8794054f1f6dbfe35f9abd87bfea5a172cc529632"
+        },
+        {
+          "file": "duration_budget_unittest.py",
+          "sha256": "3e7d7741b5b249b64db6c898bc6674e3a1893c46f52598213ecc765cda933e67"
+        },
+        {
+          "file": "skip_audit.py",
+          "sha256": "c056a5b2271532181df31f1a5281c04e6ada1166fe2bd53ca306aea135d8d984"
+        },
+        {
+          "file": "sweep_guard.py",
+          "sha256": "a7862ba96e47f370f5d574de78a791303ffbec522f619b5e059cc0e185d36fc2"
+        },
+        {
+          "file": "verify_checkout.py",
+          "sha256": "c2a2f452f8b7b51cbccce70b0fca0cf30ba7b3715b6d7c93f4fcb2f071548f39"
+        }
+      ]
+    },
+    "map_kit": {
+      "version": 1,
+      "kind": "ui",
+      "files": [
+        {
+          "file": "leaflet/LICENSE",
+          "sha256": "bbc959aaef7488b38942e7f05cfd1244351f8bce54261951ea17dd7cf60f894b"
+        },
+        {
+          "file": "leaflet/images/layers-2x.png",
+          "sha256": "066daca850d8ffbef007af00b06eac0015728dee279c51f3cb6c716df7c42edf"
+        },
+        {
+          "file": "leaflet/images/layers.png",
+          "sha256": "1dbbe9d028e292f36fcba8f8b3a28d5e8932754fc2215b9ac69e4cdecf5107c6"
+        },
+        {
+          "file": "leaflet/images/marker-icon-2x.png",
+          "sha256": "00179c4c1ee830d3a108412ae0d294f55776cfeb085c60129a39aa6fc4ae2528"
+        },
+        {
+          "file": "leaflet/images/marker-icon.png",
+          "sha256": "574c3a5cca85f4114085b6841596d62f00d7c892c7b03f28cbfa301deb1dc437"
+        },
+        {
+          "file": "leaflet/images/marker-shadow.png",
+          "sha256": "264f5c640339f042dd729062cfc04c17f8ea0f29882b538e3848ed8f10edb4da"
+        },
+        {
+          "file": "leaflet/leaflet.css",
+          "sha256": "337bfca5cabd03b39815b2700febe2b3b7edf55921c59cd49f88ecb328212303"
+        },
+        {
+          "file": "leaflet/leaflet.js",
+          "sha256": "db49d009c841f5ca34a888c96511ae936fd9f5533e90d8b2c4d57596f4e5641a"
+        },
+        {
+          "file": "map_kit.js",
+          "sha256": "7471f7ba9deb08164091c496318f059c75d3225d72aae9fc5500e9ad40f615e5"
+        },
+        {
+          "file": "world_land.js",
+          "sha256": "b19fc444594fc881c5513cee48b00376c132f1bf3d725c671ae11fc4ef4cd46c"
+        }
+      ],
+      "path": "static/vendor/map_kit"
+    },
+    "table_kit": {
+      "version": 3,
+      "kind": "ui",
+      "files": [
+        {
+          "file": "table_kit.css",
+          "sha256": "7defec054ad63f1d0e51e64b50ab3d6f7f98f06b84318e44dd11c3759c0f96ca"
+        },
+        {
+          "file": "table_kit.js",
+          "sha256": "a91a1d68abfdbf4647bfd564e5be14069c30f60a0bf7ee1911ee57154548bd04"
+        }
+      ],
+      "path": "static/vendor/table_kit"
+    }
+  },
+  "agents": {
+    "as": "agents",
+    "roster": [
+      "crew",
+      "scrum",
+      "reviewers"
+    ],
+    "files": [
+      {
+        "file": "chief-of-staff.md",
+        "sha256": "0990a09dd82ca49280636e271e51d5b2dacba1fe3e88ccfe37f448e23e4a4d8a"
+      },
+      {
+        "file": "designer.md",
+        "sha256": "54cc61a3f537b9e73971ab00122f5e5878b019412e68da62cc0684904d6675f5"
+      },
+      {
+        "file": "copywriter.md",
+        "sha256": "1585c3c2fc36d92c09afdabefbde6a5a3bda0deaa33c170b832d5fdf60716e9e"
+      },
+      {
+        "file": "builder.md",
+        "sha256": "2fdbbb47f236753291371ab46aa3a3326a351e26dfb47e5c1b707835bacd10e2"
+      },
+      {
+        "file": "auditor.md",
+        "sha256": "2b15f4e2e4ffa28e8b5c7464a43a982b74d400313e9529f54bffee5e88f19268"
+      },
+      {
+        "file": "verifier.md",
+        "sha256": "679586cacd3cb13e162ff380d4da075f168247515faf21896049ef0726ac0e51"
+      },
+      {
+        "file": "requirements-gopher.md",
+        "sha256": "213c09ccb293996e32ab020c5cfe93830eb74d6a93a9a7c812786111b2e9d193"
+      },
+      {
+        "file": "housekeeper.md",
+        "sha256": "ea973433467a8227b47c71d0ad344165eae28b981a41a563de26eac3e235871d"
+      },
+      {
+        "file": "fault-analyst.md",
+        "sha256": "06d20995b6d118a150a34d9305f4dd0af5884e92b3ea09053e41e1407e0cde43"
+      },
+      {
+        "file": "gate-auditor.md",
+        "sha256": "d77605d47ba5f09ebf99f56b885f4f281048534e05ef107864d3b5a8a6bc155b"
+      },
+      {
+        "file": "scrum-master.md",
+        "sha256": "859ee8abd73cc736fbff0a83aa2065bca47f552acd9618765de1ad276d0622d2"
+      },
+      {
+        "file": "sprint-reviewer.md",
+        "sha256": "07e76b3101531792a12a5737d15dd4009984255236575dde8375181450ac3d15"
+      },
+      {
+        "file": "conversation-cartographer.md",
+        "sha256": "6505f890756ee82685a4b68cd1b4842d68655a1295084e151c3dc0ea141ec77f"
+      },
+      {
+        "file": "python-reviewer.md",
+        "sha256": "adc0da8b01f35c724a30598e818e20ee5e8f421e15a3bdc22de97f207d7925d5"
+      },
+      {
+        "file": "js-reviewer.md",
+        "sha256": "4d951b43153f3faffc4ad07a1002b7bab5a476228fe0be4831da26c289caa40a"
+      },
+      {
+        "file": "silent-failure-hunter.md",
+        "sha256": "5004377e06e7a17008b22a60c5de178b1c97a66aa6a535d0cdd98d11165d5ee4"
+      },
+      {
+        "file": "security-reviewer.md",
+        "sha256": "04f19104a1d41cf26fb4c718e43e25e7a20cb61f2a0fc8cff92810efca840081"
+      },
+      {
+        "file": "doc-updater.md",
+        "sha256": "c195ed0ec79901278fea77ebeb35812e90385a8e31fa891f2d21f64c6643a57d"
+      },
+      {
+        "file": "pr-test-analyzer.md",
+        "sha256": "e2094c518a6932901479c684dd148f2c115c1dc24b0bc7749fe36211386b329f"
+      },
+      {
+        "file": "tdd-guide.md",
+        "sha256": "9de28c0516d5ae6cbd7b5e912afb9fe148df7922198f869bd4746f0693a0ff28"
+      },
+      {
+        "file": "fault-hunter.md",
+        "sha256": "18915c255084166a06d978c27f216dd953beb8fdde688e87687f1897ca083602"
+      }
+    ]
+  }
+}

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" data-tk-look="clean">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bushfire atlas</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/map_kit/leaflet/leaflet.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/table_kit/table_kit.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='atlas.css') }}">
+</head>
+<body data-window-hours="{{ window_hours|int }}">
+  <header class="topbar">
+    <div>
+      <h1>Bushfire atlas</h1>
+      <p class="sub">Every state's fires as one picture, linked by place and time, never by an agency's id.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="controls" aria-label="Filters">
+      <label class="ctl ctl-wide">Window ends
+        <input id="f-end" type="range" min="-336" max="0" step="1" value="0">
+        <output id="f-end-label">now</output>
+      </label>
+      <label class="ctl">Window
+        <select id="f-hours">
+          <option value="6">6 hours</option>
+          <option value="24">24 hours</option>
+          <option value="72">3 days</option>
+          <option value="168">7 days</option>
+          <option value="720">30 days</option>
+        </select>
+      </label>
+      <label class="ctl">Jurisdiction
+        <select id="f-jurisdiction">
+          <option value="">All</option>
+          {% for j in jurisdictions %}<option value="{{ j }}">{{ j }}</option>{% endfor %}
+        </select>
+      </label>
+      <label class="ctl">Warning level
+        <select id="f-level">
+          <option value="">Any</option>
+          {% for l in levels %}<option value="{{ l }}">{{ l.replace('_', ' ') }}</option>{% endfor %}
+        </select>
+      </label>
+      <label class="ctl">Record kind
+        <select id="f-kind">
+          <option value="">Any</option>
+          {% for k in kinds %}<option value="{{ k }}">{{ k.replace('_', ' ') }}</option>{% endfor %}
+        </select>
+      </label>
+    </section>
+
+    <p id="state" class="state" role="status">Loading…</p>
+
+    <section class="layout">
+      <div class="map-wrap">
+        <div id="map" class="map" aria-label="Map of fire events"></div>
+        <p id="map-note" class="note" hidden></p>
+      </div>
+
+      <div class="panel">
+        <h2>Fire events <span id="event-count" class="count"></span></h2>
+        <table id="events" data-table>
+          <thead><tr>
+            <th>Event</th><th>Warning</th><th>Status</th><th>Jurisdictions</th>
+            <th>First seen (UTC)</th><th>Last seen (UTC)</th><th>Records</th><th>Sources</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="detail" class="panel" hidden>
+      <h2>Event <span id="detail-id"></span></h2>
+      <p id="detail-summary" class="note"></p>
+      <p id="detail-geom" class="note" hidden></p>
+      <table id="members" data-table>
+        <thead><tr>
+          <th>Source</th><th>Agency</th><th>Agency id</th><th>Jurisdiction</th><th>Kind</th>
+          <th>Warning</th><th>Agency's term</th><th>Status</th><th>Start (UTC)</th>
+          <th>End (UTC)</th><th>Shape</th><th>Precision m</th><th>Stated ha</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="panel">
+      <h2>Sources</h2>
+      <table id="sources" data-table data-tk="lite">
+        <thead><tr><th>Source</th><th>Kind</th><th>State</th><th>Records</th><th>Newest (UTC)</th><th>Note</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="note">Read-only from data_library's green layer. Linking: shapes within
+        <span id="link-distance"></span> m and times within <span id="link-gap"></span> h are one fire
+        (index: <span id="link-index"></span>).</p>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='vendor/map_kit/leaflet/leaflet.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/map_kit/world_land.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/map_kit/map_kit.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/table_kit/table_kit.js') }}"></script>
+  <script src="{{ url_for('static', filename='atlas.js') }}"></script>
+</body>
+</html>

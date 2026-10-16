@@ -1,0 +1,6 @@
+-r requirements.txt
+pytest>=8.0
+# scripts/make_fixture.py writes the constructed green store with pandas.
+pandas>=2.0
+# scripts/browser_check.py drives real Chromium.
+playwright>=1.40
