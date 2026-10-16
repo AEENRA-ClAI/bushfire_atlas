@@ -86,7 +86,11 @@ def check(out: str | None) -> list:
                     failures.append(f"expected a marker per event, saw {markers}")
                 page.locator("#events tbody tr", has_text="cross-border").first.click()
                 page.wait_for_selector("#members tbody tr", timeout=10_000)
-                ids = page.locator("#members tbody tr td:nth-child(3)").all_text_contents()
+                # the table kit puts its own tick-box cell (data-tk-own) first in every row, so
+                # count the page's own cells: the third is the agency id
+                ids = page.locator("#members tbody tr").evaluate_all(
+                    "rows => rows.map(r => { var c = Array.from(r.cells).filter("
+                    "x => !x.hasAttribute('data-tk-own')); return c[2] ? c[2].textContent : ''; })")
                 if not {"QFD-0001", "NSW-77"} <= set(ids):
                     failures.append(f"detail is missing agency ids: {ids}")
                 page.wait_for_timeout(600)

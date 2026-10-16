@@ -3,7 +3,7 @@
   "id": "bushfire-atlas",
   "git_url": "https://github.com/AEENRA-ClAI/bushfire_atlas",
   "command": ".venv/bin/gunicorn \"app:create_app()\" --bind {host}:{port} --workers 1 --threads 4",
-  "port": 8622,
+  "port": 8624,
   "health_path": "/healthz",
   "env": {
     "EXTERNAL_DATA_ROOT": "/library"

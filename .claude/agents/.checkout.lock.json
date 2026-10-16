@@ -1,0 +1,100 @@
+{
+  "app": "bushfire_atlas",
+  "generated_at": "2026-10-16T18:29:17+00:00",
+  "source": "toolbox",
+  "note": "Checked out from the toolbox — DO NOT EDIT these agents here; the canonical copies live in toolbox library/prompts/teams/. Re-run scripts/checkout.py and they are overwritten.",
+  "agents": {
+    "as": "agents",
+    "roster": [
+      "crew",
+      "scrum",
+      "reviewers"
+    ],
+    "files": [
+      {
+        "file": "chief-of-staff.md",
+        "sha256": "0990a09dd82ca49280636e271e51d5b2dacba1fe3e88ccfe37f448e23e4a4d8a"
+      },
+      {
+        "file": "designer.md",
+        "sha256": "54cc61a3f537b9e73971ab00122f5e5878b019412e68da62cc0684904d6675f5"
+      },
+      {
+        "file": "copywriter.md",
+        "sha256": "1585c3c2fc36d92c09afdabefbde6a5a3bda0deaa33c170b832d5fdf60716e9e"
+      },
+      {
+        "file": "builder.md",
+        "sha256": "2fdbbb47f236753291371ab46aa3a3326a351e26dfb47e5c1b707835bacd10e2"
+      },
+      {
+        "file": "auditor.md",
+        "sha256": "2b15f4e2e4ffa28e8b5c7464a43a982b74d400313e9529f54bffee5e88f19268"
+      },
+      {
+        "file": "verifier.md",
+        "sha256": "679586cacd3cb13e162ff380d4da075f168247515faf21896049ef0726ac0e51"
+      },
+      {
+        "file": "requirements-gopher.md",
+        "sha256": "213c09ccb293996e32ab020c5cfe93830eb74d6a93a9a7c812786111b2e9d193"
+      },
+      {
+        "file": "housekeeper.md",
+        "sha256": "ea973433467a8227b47c71d0ad344165eae28b981a41a563de26eac3e235871d"
+      },
+      {
+        "file": "fault-analyst.md",
+        "sha256": "06d20995b6d118a150a34d9305f4dd0af5884e92b3ea09053e41e1407e0cde43"
+      },
+      {
+        "file": "gate-auditor.md",
+        "sha256": "d77605d47ba5f09ebf99f56b885f4f281048534e05ef107864d3b5a8a6bc155b"
+      },
+      {
+        "file": "scrum-master.md",
+        "sha256": "859ee8abd73cc736fbff0a83aa2065bca47f552acd9618765de1ad276d0622d2"
+      },
+      {
+        "file": "sprint-reviewer.md",
+        "sha256": "07e76b3101531792a12a5737d15dd4009984255236575dde8375181450ac3d15"
+      },
+      {
+        "file": "conversation-cartographer.md",
+        "sha256": "6505f890756ee82685a4b68cd1b4842d68655a1295084e151c3dc0ea141ec77f"
+      },
+      {
+        "file": "python-reviewer.md",
+        "sha256": "adc0da8b01f35c724a30598e818e20ee5e8f421e15a3bdc22de97f207d7925d5"
+      },
+      {
+        "file": "js-reviewer.md",
+        "sha256": "4d951b43153f3faffc4ad07a1002b7bab5a476228fe0be4831da26c289caa40a"
+      },
+      {
+        "file": "silent-failure-hunter.md",
+        "sha256": "5004377e06e7a17008b22a60c5de178b1c97a66aa6a535d0cdd98d11165d5ee4"
+      },
+      {
+        "file": "security-reviewer.md",
+        "sha256": "04f19104a1d41cf26fb4c718e43e25e7a20cb61f2a0fc8cff92810efca840081"
+      },
+      {
+        "file": "doc-updater.md",
+        "sha256": "c195ed0ec79901278fea77ebeb35812e90385a8e31fa891f2d21f64c6643a57d"
+      },
+      {
+        "file": "pr-test-analyzer.md",
+        "sha256": "e2094c518a6932901479c684dd148f2c115c1dc24b0bc7749fe36211386b329f"
+      },
+      {
+        "file": "tdd-guide.md",
+        "sha256": "9de28c0516d5ae6cbd7b5e912afb9fe148df7922198f869bd4746f0693a0ff28"
+      },
+      {
+        "file": "fault-hunter.md",
+        "sha256": "18915c255084166a06d978c27f216dd953beb8fdde688e87687f1897ca083602"
+      }
+    ]
+  }
+}

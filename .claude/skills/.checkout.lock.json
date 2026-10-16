@@ -1,0 +1,44 @@
+{
+  "app": "bushfire_atlas",
+  "generated_at": "2026-10-16T18:29:17+00:00",
+  "source": "toolbox",
+  "note": "Checked out from the toolbox — DO NOT EDIT these skills here; the canonical copies live in toolbox skills/<name>/. Re-run scripts/checkout.py and they are overwritten. Only the skills named below are checkout-managed; a skill dir beside them is yours.",
+  "skills": {
+    "as": "skills",
+    "roster": [
+      "harness"
+    ],
+    "skills": {
+      "eval-harness": [
+        {
+          "file": "SKILL.md",
+          "sha256": "4af18d15c6aaa67724f7a2db648150f4fc6e5cdc1445f33888edf81de8449686"
+        }
+      ],
+      "verification-loop": [
+        {
+          "file": "SKILL.md",
+          "sha256": "5e95e9b4649d8c612d47c76adc142f7b18cac89a5445fe0842aa65e45da61a5b"
+        }
+      ],
+      "goal-loops": [
+        {
+          "file": "SKILL.md",
+          "sha256": "7c2fb4355fcbd300d4a33e8b0d65eb7b01a2e909eba3eba9b422bfc79fdf4bf4"
+        }
+      ],
+      "cost-aware-llm-pipeline": [
+        {
+          "file": "SKILL.md",
+          "sha256": "fd65a4251082832add723802a6636a31fb4a19aab6caab381dd6a6962a617bf8"
+        }
+      ],
+      "offline-first": [
+        {
+          "file": "SKILL.md",
+          "sha256": "f3697ac51b3a195488a7e5659ebb2e37c9c9eb03135b3ab666ed4cdf53579b89"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/session_bootstrap.sh"
+          },
+          {
+            "type": "command",
+            "command": "python3 .toolbox/instincts/inject.py --scope bushfire_atlas"
+          },
+          {
+            "type": "command",
+            "command": "python3 .toolbox/instincts/handover.py --root ."
+          }
+        ]
+      }
+    ]
+  }
+}

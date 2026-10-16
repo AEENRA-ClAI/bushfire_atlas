@@ -57,7 +57,7 @@ def test_settings_have_baked_defaults(monkeypatch):
     assert s.data_root == "/library"
     assert s.green_root == os.path.join("/library", "ext_data", "green")
     assert s.map_layers_root == os.path.join("/library", "map_layers")
-    assert s.port == 8622 and s.host == "127.0.0.1"
+    assert s.port == 8624 and s.host == "127.0.0.1"
     assert s.state_dir.endswith(os.path.join(".local", "state", "bushfire_atlas"))
     assert (s.link_distance_m, s.link_gap_hours) == (3000.0, 24.0)
     assert s.sources == ()

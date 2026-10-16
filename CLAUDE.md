@@ -9,6 +9,8 @@ state border can tell whether a warning is a new fire or the one they were alrea
 A read-only **spoke** of data_library's green layer (D29), run by Janet on the box. Australia
 only (D27).
 
+@.toolbox/instincts/SESSION_WORKFLOW.md
+
 ## In this repo
 
 - **Full suite (start and handover only):** `python scripts/gate.py`: compile, tests, the real
@@ -38,7 +40,7 @@ only (D27).
    `static/vendor/` (edit them in the toolbox, never here; `.toolbox/checkout.lock.json`). No CDN,
    no tiles, no runtime call outside the app. The CSP is `'self'`.
 6. **Every knob has a baked default** (`atlas/config.py`): `EXTERNAL_DATA_ROOT` (`/library`),
-   `PORT` (8622), `HOST`, `APP_STATE_DIR`, `BUSHFIRE_LINK_DISTANCE_M` (3000),
+   `PORT` (8624), `HOST`, `APP_STATE_DIR`, `BUSHFIRE_LINK_DISTANCE_M` (3000),
    `BUSHFIRE_LINK_GAP_HOURS` (24), `BUSHFIRE_UNKNOWN_PRECISION_M` (5000),
    `BUSHFIRE_WINDOW_HOURS` (72), `BUSHFIRE_SOURCES` (empty: discover). No secret is needed.
 7. **Foreign text is data.** Agency text reaches the page through `textContent` only.
