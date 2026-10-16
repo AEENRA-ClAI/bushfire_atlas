@@ -1,0 +1,8 @@
+# Runtime. Janet's "Set it up automatically" builds .venv from this file.
+Flask>=3.0
+gunicorn>=22.0
+# Reads green parquet. Without it every source says "pyarrow is not installed" (honest-empty).
+pyarrow>=14.0
+# The H3 index (resolution 7, the contract's h3_r7). Optional at runtime: without it the linker
+# uses its lat/lon grid and gives the same events (tests/test_linker.py).
+h3>=4.0
