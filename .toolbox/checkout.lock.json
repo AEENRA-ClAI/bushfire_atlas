@@ -1,0 +1,74 @@
+{
+  "app": "bushfire_atlas",
+  "generated_at": "2026-10-16T07:57:46+00:00",
+  "source": "toolbox",
+  "bundles": {
+    "map_kit": {
+      "version": 1,
+      "kind": "ui",
+      "files": [
+        {
+          "file": "leaflet/LICENSE",
+          "sha256": "bbc959aaef7488b38942e7f05cfd1244351f8bce54261951ea17dd7cf60f894b"
+        },
+        {
+          "file": "leaflet/images/layers-2x.png",
+          "sha256": "066daca850d8ffbef007af00b06eac0015728dee279c51f3cb6c716df7c42edf"
+        },
+        {
+          "file": "leaflet/images/layers.png",
+          "sha256": "1dbbe9d028e292f36fcba8f8b3a28d5e8932754fc2215b9ac69e4cdecf5107c6"
+        },
+        {
+          "file": "leaflet/images/marker-icon-2x.png",
+          "sha256": "00179c4c1ee830d3a108412ae0d294f55776cfeb085c60129a39aa6fc4ae2528"
+        },
+        {
+          "file": "leaflet/images/marker-icon.png",
+          "sha256": "574c3a5cca85f4114085b6841596d62f00d7c892c7b03f28cbfa301deb1dc437"
+        },
+        {
+          "file": "leaflet/images/marker-shadow.png",
+          "sha256": "264f5c640339f042dd729062cfc04c17f8ea0f29882b538e3848ed8f10edb4da"
+        },
+        {
+          "file": "leaflet/leaflet.css",
+          "sha256": "337bfca5cabd03b39815b2700febe2b3b7edf55921c59cd49f88ecb328212303"
+        },
+        {
+          "file": "leaflet/leaflet.js",
+          "sha256": "db49d009c841f5ca34a888c96511ae936fd9f5533e90d8b2c4d57596f4e5641a"
+        },
+        {
+          "file": "map_kit.js",
+          "sha256": "7471f7ba9deb08164091c496318f059c75d3225d72aae9fc5500e9ad40f615e5"
+        },
+        {
+          "file": "world_land.js",
+          "sha256": "b19fc444594fc881c5513cee48b00376c132f1bf3d725c671ae11fc4ef4cd46c"
+        }
+      ],
+      "path": "static/vendor/map_kit"
+    },
+    "table_kit": {
+      "version": 3,
+      "kind": "ui",
+      "files": [
+        {
+          "file": "table_kit.css",
+          "sha256": "7defec054ad63f1d0e51e64b50ab3d6f7f98f06b84318e44dd11c3759c0f96ca"
+        },
+        {
+          "file": "table_kit.js",
+          "sha256": "a91a1d68abfdbf4647bfd564e5be14069c30f60a0bf7ee1911ee57154548bd04"
+        }
+      ],
+      "path": "static/vendor/table_kit"
+    }
+  },
+  "agents": {
+    "as": "agents",
+    "roster": [],
+    "files": []
+  }
+}
