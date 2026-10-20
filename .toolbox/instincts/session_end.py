@@ -11,6 +11,8 @@ It does the mechanical steps itself and reports each one:
 1. the merge guard against the base (is the branch up to date, and does it clobber anything?);
 2. the full suite, read from the "Full suite" line of the repo's CLAUDE.md;
 3. the records: `doc_records.py all`, then `copy_paste.py`;
+3c. the board: `board_items.py summary` (the repo's cards on Janet's Runs → Board: do they read,
+    what this session moved, what nobody has touched for a month);
 4. git state: uncommitted files, unpushed commits.
 
 Then it prints the steps only Claude can do (score the sprint, the fault hunt, write the handover,
@@ -96,6 +98,10 @@ def main(argv=None) -> int:
     report("3b. Copy-paste sheet", code, text)
     worst = max(worst, 1 if code else 0)
 
+    code, text = _py("board_items.py", root, "--root", str(root), "summary", tail=40)
+    report("3c. Board cards (docs/board_items.json)", code, text)
+    worst = max(worst, 1 if code else 0)
+
     dirty = subprocess.run(["git", "-C", str(root), "status", "--short"], capture_output=True, text=True).stdout
     ahead = subprocess.run(["git", "-C", str(root), "log", "--oneline", "@{u}..HEAD"],
                            capture_output=True, text=True)
@@ -112,6 +118,13 @@ def main(argv=None) -> int:
 5. **Score the sprint**: each objective PASS / PARTIAL / FAIL against its gate, with evidence; a
    three-line retro.
 6. **Fault hunt**: run the `fault-hunter` agent on the repo; paste what it scanned and found.
+6b. **Update the board** (owner 2026-10-19: "build this process into the handover … update cards
+   or … move stuff from one spot to another"). For each piece of work this session opened, moved,
+   finished or parked: `board_items.py add / move / done` (a pipeline: `board_items.py review`).
+   An answer she gave on a Decision card (it is in `claude-inbox`) moves that card where the answer
+   said; a decision that changed goes on the card's trail (`decided --supersedes`), a dropped idea
+   to Retired (`retire --why`), a command she must run onto the card (`--command`). Then step 3c
+   again: it lists every move, and they go in the handover's Board moves.
 7. **Write the handover** from `{template.relative_to(root) if template else 'HANDOVER_TEMPLATE.md'}`
    into `docs/handover/`, with step 2's counts and every failure marked CAUSED-HERE, PRE-EXISTING or
    ENVIRONMENT. Then run step 3 again so the records pick it up.

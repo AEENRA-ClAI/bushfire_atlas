@@ -1,6 +1,6 @@
 {
   "app": "bushfire_atlas",
-  "generated_at": "2026-10-16T18:29:17+00:00",
+  "generated_at": "2026-10-20T04:24:20+00:00",
   "source": "toolbox",
   "note": "Checked out from the toolbox — DO NOT EDIT these agents here; the canonical copies live in toolbox library/prompts/teams/. Re-run scripts/checkout.py and they are overwritten.",
   "agents": {
@@ -17,7 +17,7 @@
       },
       {
         "file": "designer.md",
-        "sha256": "54cc61a3f537b9e73971ab00122f5e5878b019412e68da62cc0684904d6675f5"
+        "sha256": "6c5240bb8ad9fbbf06deddb0f6467ea6fe9ac0dd9fcb80552ca0ef69bce98279"
       },
       {
         "file": "copywriter.md",
@@ -37,11 +37,11 @@
       },
       {
         "file": "requirements-gopher.md",
-        "sha256": "213c09ccb293996e32ab020c5cfe93830eb74d6a93a9a7c812786111b2e9d193"
+        "sha256": "55bab2b4d32c6979a157ca458dfed7fbd81823b849518c21305c7b9ec4143cc1"
       },
       {
         "file": "housekeeper.md",
-        "sha256": "ea973433467a8227b47c71d0ad344165eae28b981a41a563de26eac3e235871d"
+        "sha256": "c726fc6d9ce2840b35fc9d75dbb3feb1eda9669a3cb4dda0ba71ab210f888ba3"
       },
       {
         "file": "fault-analyst.md",
@@ -49,11 +49,11 @@
       },
       {
         "file": "gate-auditor.md",
-        "sha256": "d77605d47ba5f09ebf99f56b885f4f281048534e05ef107864d3b5a8a6bc155b"
+        "sha256": "15b22bba39c2a308d29afa08204365f65c4da2fad9aa5cbc094d61ade702b467"
       },
       {
         "file": "scrum-master.md",
-        "sha256": "859ee8abd73cc736fbff0a83aa2065bca47f552acd9618765de1ad276d0622d2"
+        "sha256": "18948e21dcf8be3db76f65841d39d91c742a7c3c4b3bd0b0c4481f178e067f0e"
       },
       {
         "file": "sprint-reviewer.md",

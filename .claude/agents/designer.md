@@ -3,7 +3,7 @@ name: designer
 title: Designer
 category: teams
 slug: designer
-description: The specialist for how a thing looks. Owns the visual layer — stylesheets and visual assets — and makes an interface look like someone cared: colour, contrast, spacing, hierarchy, layout. Use it when something looks wrong, unstyled, cramped, low-contrast, or off-brand. It does not write copy or application logic.
+description: "The specialist for how a thing looks. Owns the visual layer — stylesheets and visual assets — and makes an interface look like someone cared: colour, contrast, spacing, hierarchy, layout. Use it when something looks wrong, unstyled, cramped, low-contrast, or off-brand. It does not write copy or application logic."
 tags: [design, ui, css, visual, accessibility]
 model: sonnet
 owns: []

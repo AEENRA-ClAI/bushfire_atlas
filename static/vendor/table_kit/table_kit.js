@@ -414,6 +414,9 @@
   };
 
   Kit.prototype.layout = function () {
+    // The page removed this table (a redraw with innerHTML): its ResizeObserver still fires,
+    // and paginate() would reach for a parent the box no longer has (Janet, 2026-10-19).
+    if (!this.box.isConnected) return;
     var t = this.table, pin = (t.getAttribute("data-tk-cards") || "").toLowerCase();
     var w = this.box.clientWidth || (this.box.parentElement || {}).clientWidth || 0;
     var cards = pin === "always" || (pin !== "never" && !!this.head() && w > 0 && w < NARROW);

@@ -147,11 +147,37 @@ def verify(root: str = ".") -> Tuple[List[str], List[str]]:
     return problems, checked
 
 
+def unlocked(root: str = ".") -> List[str]:
+    """A checkout folder that is THERE but whose lock is missing or will not parse (TB16).
+
+    "No lock" used to mean "nothing to verify", exit 0 — even with a merge-conflicted lock and a
+    tampered verifier beside it. A `.toolbox/` folder, or a `.claude/agents/` holding agents,
+    with no readable lock is a checkout nobody can check, and says so."""
+    out: List[str] = []
+    if os.path.isdir(os.path.join(root, ".toolbox")) and not isinstance(
+            _read_json(os.path.join(root, ".toolbox", "checkout.lock.json")), dict):
+        out.append(".toolbox/checkout.lock.json")
+    agents_dir = os.path.join(root, ".claude", "agents")
+    if os.path.isdir(agents_dir) and any(n.endswith(".md") and n not in _IGNORED
+                                         for n in os.listdir(agents_dir)) \
+            and not isinstance(_read_json(os.path.join(agents_dir, ".checkout.lock.json")), dict):
+        out.append(".claude/agents/.checkout.lock.json")
+    return out
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser(description="Verify checked-out toolbox files against their committed lock.")
     ap.add_argument("--root", default=".", help="the consumer repo root (default: the current directory)")
     args = ap.parse_args(argv)
 
+    missing = unlocked(args.root)
+    if missing:
+        print("verify_checkout: a checkout is here but its lock is MISSING or UNREADABLE "
+              "(a merge-conflicted lock reads this way), so nothing can be verified:")
+        for rel in missing:
+            print("  NO LOCK  " + rel)
+        print("Restore the lock from git, or re-run: python ../toolbox/scripts/checkout.py --app <this app>")
+        return 2
     problems, checked = verify(args.root)
     if not checked:
         # Honest-empty, and it says so rather than printing a green tick it has not earned.

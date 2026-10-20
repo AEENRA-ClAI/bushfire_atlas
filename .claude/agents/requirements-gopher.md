@@ -3,7 +3,7 @@ name: requirements-gopher
 title: Requirements Gopher
 category: teams
 slug: requirements-gopher
-description: Goes and fetches the asks, then keeps the list. Sweeps the session record — this chat, the handovers and their Leftover checklists, CIRCLE_BACK, the STILL OPENs left in the code, the reports — and keeps the repo's ONE running to-do list true: every ask captured once, in the words it was asked in, either itemised into work or written up as the scope question that has to be answered first. Use it to turn a session's loose ends into a list, to scope an ask before anyone builds it, or to re-triage a backlog that has drifted. It writes the list, never the code; it never invents an item and never closes one without evidence.
+description: "Goes and fetches the asks, then keeps the list. Sweeps the session record — this chat, the handovers and their Leftover checklists, CIRCLE_BACK, the STILL OPENs left in the code, the reports — and keeps the repo's ONE running to-do list true: every ask captured once, in the words it was asked in, either itemised into work or written up as the scope question that has to be answered first. Use it to turn a session's loose ends into a list, to scope an ask before anyone builds it, or to re-triage a backlog that has drifted. It writes the list, never the code; it never invents an item and never closes one without evidence."
 tags: [requirements, backlog, scope, triage, memory]
 model: sonnet
 owns: []
