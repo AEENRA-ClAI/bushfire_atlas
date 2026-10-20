@@ -46,11 +46,14 @@
 """Find an assertion or a return gated on an ambient capability. See the header."""
 from __future__ import annotations
 
+import argparse
 import ast
+import glob
 import os
+import sys
 from typing import Dict, Iterable, List, Optional
 
-__all__ = ["find", "Finding", "AMBIENT_CALL_SUFFIXES", "AMBIENT_NAME_SHAPES"]
+__all__ = ["find", "main", "test_files", "Finding", "AMBIENT_CALL_SUFFIXES", "AMBIENT_NAME_SHAPES"]
 
 #: a CALL is ambient when its name ends with one of these
 AMBIENT_CALL_SUFFIXES = ("available", "_present", "is_installed", "_installed",
@@ -163,3 +166,55 @@ def find(paths: Iterable[str], *, allow: Optional[Dict[str, str]] = None) -> Lis
                     out.append(Finding(path=os.path.relpath(path), test=fn.name,
                                        line=node.lineno, kind=kind, condition=cond))
     return out
+
+
+#: test-file shapes the fleet uses (pytest `test_*.py`, janet_lite's `*_test.py`)
+TEST_GLOBS = ("test_*.py", "*_test.py")
+
+
+#: folders that hold someone else's tests, never this repo's: a virtualenv's site-packages holds
+#: hundreds of `test_*.py`, and janet_lite runs these steps over `.` (hidden folders such as
+#: `.venv`, `.toolbox` and `.git` are already skipped by glob)
+SKIP_DIRS = frozenset({"__pycache__", "node_modules", "site-packages", "venv", "env"})
+
+
+def test_files(roots: Iterable[str]) -> Dict[str, List[str]]:
+    """{root: [test files under it]}, every root kept so an empty one can be named."""
+    out: Dict[str, List[str]] = {}
+    for root in roots:
+        files = set()
+        for pat in TEST_GLOBS:
+            files.update(glob.glob(os.path.join(root, "**", pat), recursive=True))
+        out[root] = sorted(f for f in files
+                           if not SKIP_DIRS & set(os.path.relpath(f, root).split(os.sep)[:-1]))
+    return out
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    """Gate step (TB16): exit 1 on a finding, 2 when a root scanned no test file at all."""
+    ap = argparse.ArgumentParser(description="Find assertions or returns gated on the machine.")
+    ap.add_argument("roots", nargs="+", help="folders whose test files are scanned")
+    ap.add_argument("--min-files", type=int, default=1,
+                    help="the floor per root: fewer test files than this is a scan that did not look")
+    args = ap.parse_args(argv)
+    per_root = test_files(args.roots)
+    thin = {r: len(f) for r, f in per_root.items() if len(f) < args.min_files}
+    if thin:
+        for root, n in thin.items():
+            print(f"ambient_branch: {root}: {n} test file(s), floor {args.min_files} — "
+                  f"THE SCAN DID NOT LOOK, so no verdict.", file=sys.stderr)
+        return 2
+    files = [f for fs in per_root.values() for f in fs]
+    rows = find(files)
+    if rows:
+        print(f"ambient_branch: {len(rows)} test(s) branch on the machine:")
+        for r in rows:
+            print(f"  {r['kind']:12s} {r['path']}:{r['line']} {r['test']}  if {r['condition']}")
+        print("Force the condition (monkeypatch the flag) so the test runs everywhere.")
+        return 1
+    print(f"ambient_branch: clean — {len(files)} test file(s) under {len(per_root)} root(s).")
+    return 0
+
+
+if __name__ == "__main__":                                   # pragma: no cover
+    raise SystemExit(main())

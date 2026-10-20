@@ -3,7 +3,7 @@ name: gate-auditor
 title: Gate Auditor
 category: teams
 slug: gate-auditor
-description: Audits the gate tests themselves — is a sweep actually biting, or is it green wallpaper? Checks that a sweep scanned anything, that its scan set is derived rather than hand-listed, that it asserts a condition instead of merely enjoying one, that skips are not hiding untested code, and that a pinned number is still reachable. It reports nothing it has not guard-bitten: every finding ships with the break that proves it. It audits tests; it does not write features.
+description: "Audits the gate tests themselves — is a sweep actually biting, or is it green wallpaper? Checks that a sweep scanned anything, that its scan set is derived rather than hand-listed, that it asserts a condition instead of merely enjoying one, that skips are not hiding untested code, and that a pinned number is still reachable. It reports nothing it has not guard-bitten: every finding ships with the break that proves it. It audits tests; it does not write features."
 tags: [tests, gates, sweeps, guard-bite, verification, ci]
 model: sonnet
 owns: []

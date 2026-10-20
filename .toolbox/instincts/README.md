@@ -77,3 +77,19 @@ single imperative sentence and always cite real `evidence`. Author here; apps ch
   guard, the full suite (from CLAUDE.md's "Full suite" line), the records and a git-state check, then
   lists the steps only Claude can do.
 - `WRITING_GOOD_CODE.md`: how to write good code in this fleet, read before the first line of code.
+
+## Since v17 (2026-10-19)
+
+- `board_items.py`: the one way a session changes its repo's cards on Janet's Runs → Board
+  (`docs/board_items.json`; data_library's pipelines in `catalog/pipeline_reviews.json`): `check`,
+  `summary`, `list`, `add`, `move`, `done`, `review`. Every change stamps the date and a history line,
+  and a newer date in the file outranks the owner's older move on the board [F28].
+- `session_end.py` step 3c runs `board_items.py summary`; the End list gained "Update the board", and
+  the handover template a **Board moves** section.
+
+## Since v18 (2026-10-19)
+
+- `board_items.py decided` puts a decision on a card's trail; `--supersedes` marks the direction
+  changing, and Janet strikes the old one through. `retire --why` sends a dropped idea to Retired
+  with its reason. `--command` / `--where` put a copy-paste command on a card: Janet's board copies
+  it, and sends it to Jobs when a recipe already runs it.

@@ -196,6 +196,20 @@ an empty section — that reads as "not looked at".
 |---|---|---|---|
 | moved-404 | a 404 on a GUESSED sitemap path is not a move; check whether another rung landed rows | tests/test_x.py (SIMULATED) | yes — `python -m scripts.error_lessons add …` |
 
+## Board moves
+
+<!--
+OWNER 2026-10-19: "build this process into the handover at the end of each session to like update
+cards or like move stuff from one spot to another" [F28].
+
+What this session did to the repo's cards on Janet's Runs → Board, as `session_end.py` step 3c
+printed it (`board_items.py summary`). One line each: `project:id → stage — why`. Include the
+cards added for the Leftover items below, the Decision answers carried out, and the pipelines whose
+review changed. "none" only when the session touched no work that is on the board.
+-->
+
+- <project:id> → <stage> — <why, or the PR>
+
 ## Leftover / for review (agent → item)
 
 <!--

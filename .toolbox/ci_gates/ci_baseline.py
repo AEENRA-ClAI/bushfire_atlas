@@ -65,7 +65,16 @@ DEFAULT_BASELINE = os.path.join("tests", "ci_baseline_failures.txt")
 # changes with unrelated edits (a repr, a path, a line number) and would churn the baseline without
 # telling anyone anything.
 _FAILED_RE = re.compile(r"^(?:FAILED|ERROR)\s+(\S+?)(?:\s+-\s+.*)?$")
-_MISSING_MOD_RE = re.compile(r"No module named '([A-Za-z0-9_.]+)'")
+# Quoted in a ModuleNotFoundError ("No module named 'bs4'"), BARE when the interpreter itself
+# cannot find a -m target ("python: No module named pytest"). The bare form is the one that let
+# a run that never started read as a pass (TB8, MEASURED in janet_lite 2026-09-21).
+_MISSING_MOD_RE = re.compile(r"No module named '?([A-Za-z0-9_.]*[A-Za-z0-9_])'?")
+# pytest's closing line: "4827 passed, 18 skipped in 113.94s", "1 failed, 2 errors in 0.3s",
+# "no tests ran in 0.01s".
+_SUMMARY_PART_RE = re.compile(
+    r"^(\d+) (passed|failed|errors?|skipped|xfailed|xpassed|warnings?|deselected|rerun)$")
+_RAN = {"passed", "failed", "error", "errors", "skipped", "xfailed", "xpassed"}
+_NO_TESTS_RAN_RE = re.compile(r"^=*\s*no tests ran\b", re.M)
 
 
 def parse_failures(output: str) -> Set[str]:
@@ -87,6 +96,21 @@ def parse_failures(output: str) -> Set[str]:
 def missing_modules(output: str) -> Set[str]:
     """Modules the run could not import. An environment verdict, never a code verdict."""
     return set(_MISSING_MOD_RE.findall(output))
+
+
+def tests_collected(output: str) -> Optional[int]:
+    """How many tests pytest's closing summary says it ran (passed + failed + errors + skipped …).
+
+    None means no summary line was found at all (a trimmed log, or a run that died before it could
+    print one); 0 means pytest said so ("no tests ran"). Neither is a pass on its own."""
+    if _NO_TESTS_RAN_RE.search(output):
+        return 0
+    for line in reversed(output.strip().splitlines()):
+        body = line.strip().strip("=").strip().split(" in ")[0]
+        parts = [_SUMMARY_PART_RE.match(x.strip()) for x in body.split(",")]
+        if body and all(parts):
+            return sum(int(m.group(1)) for m in parts if m.group(2) in _RAN)
+    return None
 
 
 def read_baseline(path: str) -> Optional[Set[str]]:
@@ -240,6 +264,22 @@ def main(argv: Optional[List[str]] = None) -> int:
         print("No failure list was produced, so there is nothing to compare. This is NOT a pass:")
         print("an empty failure list against a populated baseline would otherwise read as 'this")
         print("branch fixed everything'. Fix the run, then re-run the gate.")
+        print("\n--- last 40 lines ---")
+        print("\n".join(output.strip().splitlines()[-40:]))
+        return 1
+
+    # ZERO TESTS COLLECTED IS FATAL (TB8). Exit 1 stays allowed, because a genuinely failing
+    # suite returns it too, so the exit code alone cannot catch a run that never started. What
+    # can: a summary that says nothing ran, or no summary AND no failure lines at all.
+    collected = tests_collected(output)
+    if collected == 0 or (collected is None and not current):
+        print("\n=== THE SUITE DID NOT RUN (zero tests collected) ===")
+        print("pytest's summary says no test ran" if collected == 0 else
+              "There is no pytest summary line and no FAILED/ERROR line in this output, so no test "
+              "can be shown to have run.")
+        print("An empty failure list against a populated baseline would otherwise read as 'this")
+        print("branch fixed everything'. Fix the run (is pytest installed? do --paths hold tests?),")
+        print("then re-run the gate.")
         print("\n--- last 40 lines ---")
         print("\n".join(output.strip().splitlines()[-40:]))
         return 1

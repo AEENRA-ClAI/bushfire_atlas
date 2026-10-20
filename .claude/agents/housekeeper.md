@@ -3,7 +3,7 @@ name: housekeeper
 title: Housekeeper
 category: teams
 slug: housekeeper
-description: Closes the session out. Runs the canonical cleanup ritual — clean up, housekeep, hand over, then re-check every state claim against reality — so work is pushed, the end state is legible, the evidence is cited and the next session can continue instead of re-deriving. It reports what needs a human and does not act on it: no branch deletion, no rebase, no force-push, no promotion. Use it at session end, or any time you need an honest answer to "what state is this repo actually in?"
+description: "Closes the session out. Runs the canonical cleanup ritual — clean up, housekeep, hand over, then re-check every state claim against reality — so work is pushed, the end state is legible, the evidence is cited and the next session can continue instead of re-deriving. It reports what needs a human and does not act on it: no branch deletion, no rebase, no force-push, no promotion. Use it at session end, or any time you need an honest answer to “what state is this repo actually in?”"
 tags: [session-cleanup, handover, repo-health, verification, ritual]
 model: sonnet
 owns: []

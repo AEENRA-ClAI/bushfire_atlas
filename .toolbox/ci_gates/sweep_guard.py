@@ -64,9 +64,9 @@
 """Refuse a property sweep that scanned nothing. See the header for the measurement."""
 from __future__ import annotations
 
-from typing import Iterable, Iterator, List, TypeVar
+from typing import Dict, Iterable, Iterator, List, Optional, Sequence, TypeVar
 
-__all__ = ["assert_swept", "swept", "SweptNothing"]
+__all__ = ["assert_swept", "swept", "SweptNothing", "report", "main"]
 
 T = TypeVar("T")
 
@@ -128,3 +128,98 @@ def _iter_guarded(items: Iterable[T], minimum: int, what: str) -> Iterator[T]:  
     """Intentionally absent from __all__ and unused. See `swept`'s docstring for why a lazy
     guard is the wrong shape; this stub exists so nobody adds one without reading that."""
     raise NotImplementedError("use swept(): a lazy guard cannot fire on an early break")
+
+
+#: a call with one of these names walks a directory
+WALK_CALLS = frozenset({"rglob", "glob", "iglob", "walk", "iterdir", "scandir", "listdir"})
+#: a module using one of these has a floor on what it scanned (this module's API)
+FLOOR_CALLS = frozenset({"swept", "assert_swept"})
+
+
+def _called_names(path: str) -> Optional[set]:
+    """The names every call in `path` uses, or None when the file does not parse."""
+    import ast
+    try:
+        with open(path, encoding="utf-8", errors="replace") as fh:
+            tree = ast.parse(fh.read())
+    except (OSError, SyntaxError):
+        return None
+    out = set()
+    for n in ast.walk(tree):
+        if isinstance(n, ast.Call):
+            f = n.func
+            out.add(f.attr if isinstance(f, ast.Attribute) else getattr(f, "id", ""))
+    return out
+
+
+def report(files: Sequence[str]) -> Dict[str, List[str]]:
+    """{floored, walking, unread}: the test files that put a floor under a walk (`swept` /
+    `assert_swept`), the ones that walk a directory without one, and the ones that did not parse."""
+    out: Dict[str, List[str]] = {"floored": [], "walking": [], "unread": []}
+    for p in files:
+        names = _called_names(p)
+        if names is None:
+            out["unread"].append(p)
+        elif names & FLOOR_CALLS:
+            out["floored"].append(p)
+        elif names & WALK_CALLS:
+            out["walking"].append(p)
+    return out
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    """`sweep_guard.py report <root>... [--list]`: the gate step that says how much it scanned.
+
+    It replaces the copies janet_lite and data_library each kept in `scripts/gate_checks.py`
+    (`sweeps`, fault hunt F008). Exit 1 when it read no test file, or when no test uses the floor
+    at all (checked out and unused); 2 when run with no command, because a bare run checks
+    nothing. The unfloored walkers are REPORTED, not failed: a walk over a temp dir and one over
+    the repo tree look the same to this count.
+    """
+    import argparse
+    import os
+    import sys
+    argv = sys.argv[1:] if argv is None else list(argv)
+    if not argv:
+        # TB16: run bare this used to exit 0 having checked nothing.
+        sys.stderr.write("sweep_guard is a library: import `swept` in a sweep test. Run bare it "
+                         "checks nothing, so it exits 2 rather than reading as a pass. The gate "
+                         "step is `sweep_guard.py report <test root>...`.\n")
+        return 2
+    ap = argparse.ArgumentParser(description="Report which test files floor their sweeps.")
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    rp = sub.add_parser("report", help="walks vs floors over the test files under each root")
+    rp.add_argument("roots", nargs="+", help="folders whose test files are read (recursive; "
+                    "test_*.py and *_test.py, hidden folders skipped)")
+    rp.add_argument("--list", action="store_true", help="name the unfloored walkers")
+    args = ap.parse_args(argv)
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from ambient_branch import test_files          # the one test-file finder in this bundle
+    per_root = test_files(args.roots)
+    files = sorted({f for fs in per_root.values() for f in fs})
+    r = report(files)
+    print(f"sweeps: read {len(files)} test file(s) under {len(per_root)} root(s); "
+          f"{len(r['floored'])} put a floor under what they scanned (sweep_guard); "
+          f"{len(r['walking'])} others walk a directory without one")
+    print("        (a repo tree or a temp dir; this count cannot tell the two apart, so it is "
+          "reported, not failed — `--list` names them)")
+    for root, fs in per_root.items():
+        if not fs:
+            print(f"sweeps: {root}: no test file found there")
+    if r["unread"]:
+        print(f"sweeps: {len(r['unread'])} test file(s) did not parse: "
+              + ", ".join(r["unread"][:5]))
+    if args.list:
+        for p in r["walking"]:
+            print(f"  {p}")
+    if not files:
+        print("sweeps: read NOTHING — an empty scan is not a clean one")
+        return 1
+    if not r["floored"]:
+        print("sweeps: no test uses sweep_guard's floor at all — it is checked out and unused")
+        return 1
+    return 0
+
+
+if __name__ == "__main__":                                   # pragma: no cover
+    raise SystemExit(main())

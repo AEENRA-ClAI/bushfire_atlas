@@ -60,7 +60,7 @@ import subprocess
 import sys
 from typing import Dict, List, Optional, Tuple
 
-__all__ = ["parse_skips", "reported_skips", "classify", "load_policy", "audit",
+__all__ = ["parse_skips", "reported_skips", "run_reported", "classify", "load_policy", "audit",
            "FAILING_KINDS", "KINDS"]
 
 #: The four kinds a declared skip may claim. Two of them still fail.
@@ -131,6 +131,19 @@ def reported_skips(output: str) -> Optional[int]:
     return None
 
 
+_RAN = re.compile(r"\b\d+ (?:passed|failed|errors?|skipped|xfailed|xpassed)\b|^Ran \d+ tests?\b"
+                  r"|^(?:OK|FAILED)\b", re.M)
+
+
+def run_reported(output: str) -> bool:
+    """Did this output come from a run that actually ran tests? (TB16)
+
+    An empty file, `No module named pytest`, or pytest's "no tests ran" carry no skip lines,
+    so they used to audit as "no skips in this run." and exit 0: a run that never started read
+    as a clean one. A real pytest or unittest run prints its counts; a skip line is proof too."""
+    return bool(_RAN.search(output or "")) or bool(parse_skips(output or ""))
+
+
 def load_policy(path: Optional[str] = None, root: str = ".") -> Dict:
     """The repo's declared skips, or {} — never raises."""
     p = path or os.path.join(root, DEFAULT_POLICY)
@@ -171,7 +184,7 @@ def audit(skips: List[Tuple[str, str]], policy: Dict) -> Tuple[List[Dict], bool]
     return rows, ok
 
 
-def run_suite(cmd: List[str], root: str) -> str:
+def run_suite(cmd: List[str], root: str) -> Tuple[str, int]:
     """Run the repo's own suite command and return its output.
 
     `encoding="utf-8"` is NOT optional beside `text=True`: that decodes with the LOCALE codec,
@@ -182,7 +195,7 @@ def run_suite(cmd: List[str], root: str) -> str:
     print(f"$ {' '.join(cmd)}   (in {root})", flush=True)
     proc = subprocess.run(cmd, cwd=root, capture_output=True,
                           text=True, encoding="utf-8", errors="replace")
-    return (proc.stdout or "") + (proc.stderr or "")
+    return (proc.stdout or "") + (proc.stderr or ""), proc.returncode
 
 
 def render(rows: List[Dict], ok: bool, *, list_only: bool = False) -> str:
@@ -247,9 +260,20 @@ def main(argv: Optional[List[str]] = None) -> int:
                   file=sys.stderr)
             return 2
         cmd = [sys.executable if c == "python" else c for c in cmd]
-        output = run_suite(cmd, args.root)
+        output, rc = run_suite(cmd, args.root)
+        if rc not in (0, 1):
+            # pytest 2-5 / an interpreter error: the suite did not run to the end, so its skips
+            # cannot be the whole list (the return code used to be discarded, TB16).
+            print(f"skip_audit: the suite exited {rc}, so it did not run to the end — no audit.",
+                  file=sys.stderr)
+            return 2
     else:
         output = sys.stdin.read()
+
+    if not run_reported(output):
+        print("skip_audit: THE RUN REPORTED NO TEST COUNTS (empty output, `No module named pytest`, "
+              "or no tests ran), so there is nothing to audit and no verdict.", file=sys.stderr)
+        return 2
 
     skips = parse_skips(output)
     rows, ok = audit(skips, policy)

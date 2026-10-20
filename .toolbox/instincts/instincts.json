@@ -1,6 +1,6 @@
 {
   "schema": "toolbox/instincts/v1",
-  "note": "The fleet's LEARNED memory — patterns earned from real sessions, each with its evidence and a confidence (0-1). A SessionStart hook injects the top few above a threshold so a fresh session starts already knowing what the fleet learned the hard way. Curate by editing this file (raise a confidence as evidence accumulates; lower it when it stops holding). Distributed via the toolbox `instincts` checkout bundle; read by inject.py.",
+  "note": "The fleet's LEARNED memory — patterns earned from real sessions, each with its evidence and a confidence (0-1). A SessionStart hook injects the top few above a threshold so a fresh session starts already knowing what the fleet learned the hard way. Curate by editing this file (raise a confidence as evidence accumulates; lower it when it stops holding). Confidence is belief, not rank: an entry that must be in the injected top few carries `\"pinned\": true` (pinned first, then confidence; a tie left at the cap is file order and the injected block says so). Distributed via the toolbox `instincts` checkout bundle; read by inject.py.",
   "instincts": [
     {
       "id": "honest-empty-says-why",

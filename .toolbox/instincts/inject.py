@@ -84,8 +84,30 @@ def select(instincts: list[dict], *, scope: str = "", threshold: float | None = 
         if scope and "all" not in scopes and scope not in scopes:
             continue
         picked.append({**it, "confidence": conf})
-    picked.sort(key=lambda i: i["confidence"], reverse=True)
+    # RANKING IS NOT BELIEF (CIRCLE_BACK §D3). Confidence answers "how much do we believe this";
+    # `pinned: true` answers "must this be in the top N". Pinned first, then the most confident;
+    # the sort is stable, so what is left of a tie is still file order, and `render` SAYS so.
+    picked.sort(key=lambda i: (not _pinned(i), -i["confidence"]))
     return picked[:lim] if lim else picked
+
+
+def _pinned(it: dict) -> bool:
+    """Only a literal JSON `true` pins: a string "false" must not."""
+    return it.get("pinned") is True
+
+
+def tied_out(picked: list[dict], every: list[dict]) -> list[dict]:
+    """Entries the cap left out at the SAME confidence as the last unpinned one it kept: the ones
+    file order decided, not confidence. Empty when nothing was cut or the cut fell between two
+    different confidences."""
+    if len(every) <= len(picked):
+        return []
+    kept = [i for i in picked if not _pinned(i)]
+    if not kept:
+        return []
+    edge = kept[-1]["confidence"]
+    ids = {i.get("id") for i in picked}
+    return [i for i in every if i.get("id") not in ids and not _pinned(i) and i["confidence"] == edge]
 
 
 def eligible(instincts: list[dict], *, scope: str = "",
@@ -98,7 +120,8 @@ def eligible(instincts: list[dict], *, scope: str = "",
     return select(instincts, scope=scope, threshold=threshold, cap=0)
 
 
-def render(picked: list[dict], n_eligible: int | None = None) -> str:
+def render(picked: list[dict], n_eligible: int | None = None,
+           ties: list[dict] | None = None) -> str:
     """The SessionStart block. When `n_eligible` says more cleared the bar than fitted, the
     block SAYS SO.
 
@@ -126,6 +149,11 @@ def render(picked: list[dict], n_eligible: int | None = None) -> str:
         lines.append(
             f"- _({n_eligible - len(picked)} more cleared the bar but did not fit the cap of "
             f"{len(picked)} — `python .toolbox/instincts/inject.py --list` for all of them.)_")
+    if ties:
+        lines.append(
+            f"- _(tie at the cap: {', '.join(str(i.get('id', '?')) for i in ties)} sat at "
+            f"{ties[0]['confidence']:.2f} like the last one kept and fell out by FILE ORDER — "
+            f"`\"pinned\": true` in instincts.json chooses on purpose.)_")
     return "\n".join(lines)
 
 
@@ -352,7 +380,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.json:
         print(json.dumps(picked, indent=2, ensure_ascii=False))
     else:
-        text = render(picked, n_eligible=len(eligible(instincts, scope=args.scope)))
+        every = eligible(instincts, scope=args.scope)
+        text = render(picked, n_eligible=len(every),
+                      ties=([] if args.list else tied_out(picked, every)))
         if text:
             print(text)
     return 0

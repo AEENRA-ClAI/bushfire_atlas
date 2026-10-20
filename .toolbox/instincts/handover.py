@@ -118,6 +118,10 @@ def _rank(path: str) -> tuple:
 
 # A time the author put straight after the date: `..._2026-09-13T14-30.md`.
 _SEQ_TIME = re.compile(r"^[_-]?T(\d{1,2})[-.](\d{2})")
+# A letter straight after the date: `session_2026-10-13c_….md` is that day's third handover
+# (janet_lite writes them so; J31.3, 2026-10-20: the letter was ignored and the next start-up
+# printed an earlier file). `b` = 2 … `z` = 26; the plain date is the first.
+_SEQ_LETTER = re.compile(r"^([a-z])(?=[_-]|$)")
 # A counter at the very END of the name: `..._2.md`, `...-3.md`. Nowhere else.
 _SEQ_TRAILING = re.compile(r"[_-](\d{1,3})$")
 
@@ -155,6 +159,9 @@ def _name_sequence(path: str) -> tuple:
     t = _SEQ_TIME.match(tail)
     if t:
         return (int(t.group(1)), int(t.group(2)))
+    letter = _SEQ_LETTER.match(tail)
+    if letter:
+        return (ord(letter.group(1)) - ord("a") + 1,)
     standalone = [tok for tok in re.split(r"[_-]", tail) if tok.isdigit()]
     if len(standalone) != 1:
         return ()
@@ -196,6 +203,7 @@ def parse_handover(text: str) -> dict:
     leftover: "list[dict]" = []
     links: "list[str]" = []
     in_leftover = in_map = False
+    leftover_heading = False
     for ln in lines:
         if not roster:
             m = _ROSTER_RE.match(ln)
@@ -207,6 +215,7 @@ def parse_handover(text: str) -> dict:
             # The map heading wins: "How the ideas connected" must never collect leftovers.
             in_map = bool(_MAP_HEAD_RE.search(h.group(1)))
             in_leftover = not in_map and bool(_LEFTOVER_HEAD_RE.search(h.group(1)))
+            leftover_heading = leftover_heading or in_leftover
             continue
         if in_map:
             b = _BULLET_RE.match(ln)
@@ -222,24 +231,36 @@ def parse_handover(text: str) -> dict:
                     leftover.append({"owner": o.group(1).strip(), "item": o.group(2).strip()})
                 elif item:
                     leftover.append({"owner": "", "item": item})
-    return {"roster": roster, "leftover": leftover, "map": links}
+    # A leftover that is one bare token ("janet_lite0") is a list that broke on the way into the
+    # file, not an item (J31.4: a handover's whole Leftover read so, and nothing said).
+    garbled = [it["item"] for it in leftover if not re.search(r"\s", it["item"])]
+    return {"roster": roster, "leftover": leftover, "map": links,
+            "leftover_heading": leftover_heading, "leftover_garbled": garbled}
 
 
 def render(parsed: dict, source: str = "") -> str:
     roster, leftover = parsed.get("roster") or [], parsed.get("leftover") or []
     links = parsed.get("map") or []
-    if not roster and not leftover and not links:
+    heading = bool(parsed.get("leftover_heading"))
+    garbled = parsed.get("leftover_garbled") or []
+    if not roster and not leftover and not links and not heading:
         return ""
     lines = ["## From the last handover"]
     if source:
         lines[0] += f"  ({os.path.basename(source)})"
     if roster:
         lines.append("**Suggested agents / rosters for this work:** " + ", ".join(roster))
+    if heading and not leftover:
+        lines.append("**Open items:** ⚠ the handover HAS a Leftover section and it is EMPTY — "
+                     "read the handover by hand; the list may have been cut on the way in.")
     if leftover:
         lines.append("**Open items to look over:**")
         for it in leftover[:20]:
             who = f"({it['owner']}) " if it.get("owner") else ""
             lines.append(f"- {who}{it['item']}")
+        if garbled:
+            lines.append(f"- ⚠ {len(garbled)} item(s) are one bare word ({', '.join(garbled[:3])}) "
+                         "— the list looks garbled; read the handover by hand.")
     if links:
         lines.append("**How the ideas connected last session:**")
         lines.extend(f"- {ln}" for ln in links[:MAP_SHOWN])

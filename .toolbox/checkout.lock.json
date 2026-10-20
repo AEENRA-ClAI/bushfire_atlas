@@ -1,31 +1,35 @@
 {
   "app": "bushfire_atlas",
-  "generated_at": "2026-10-16T18:29:17+00:00",
+  "generated_at": "2026-10-20T04:24:20+00:00",
   "source": "toolbox",
   "bundles": {
     "instincts": {
-      "version": 15,
+      "version": 21,
       "kind": "memory",
       "files": [
         {
           "file": "FLEET_DECISIONS.md",
-          "sha256": "57c08cdca09bd107fb65e93219d6302a5436d94abdcec486cd8bc9078d694dec"
+          "sha256": "fcecd6f50fd3b874780aa0ff5ac48cd198b2ea13461ec1e5944511411b9e225a"
         },
         {
           "file": "HANDOVER_TEMPLATE.md",
-          "sha256": "323b12f96449b2467ebf73f72585bc3eeee8b4477dc5fe62a1a1b9a81eb6da07"
+          "sha256": "72531691aa35ffd6f786597b686961fe3a58fc0fbd0e4c83fc5af329d058e795"
         },
         {
           "file": "README.md",
-          "sha256": "14072f3e1927ed499a830440d84f8a4eea7153724c19c983ecb2a404014966f2"
+          "sha256": "642191fc92f3cff74650f681b23887263e4d151ba80f6d613699d183769eb73f"
         },
         {
           "file": "SESSION_WORKFLOW.md",
-          "sha256": "502e2a96376c71f616e4d2bb631128b3cdad35f86f1621e6f71fc1a4da8e9678"
+          "sha256": "1900152fcafe989c416d57e13c5660e9473e9f7f966002118eea4d0d476df624"
         },
         {
           "file": "WRITING_GOOD_CODE.md",
           "sha256": "9e8c4e44a1b6fab055c3d317c914154634b616e1d85db257371c688fd5ddb0aa"
+        },
+        {
+          "file": "board_items.py",
+          "sha256": "9b55abdc461c72697394477a546e850ef67f7f266b6134e044417e2795982f80"
         },
         {
           "file": "copy_paste.py",
@@ -45,15 +49,15 @@
         },
         {
           "file": "handover.py",
-          "sha256": "a97d855769b07f65eec51d96700aff5d7cda88bb99e2f257b0ba019a03c86ae4"
+          "sha256": "87a6c06437860d5f502eb7e49581af57f166989339ff76270586a167f70dfcc4"
         },
         {
           "file": "inject.py",
-          "sha256": "a7f85cdda73c96e13c4bc9785f822e837bbc4bf43a549a51083667fd49b1661b"
+          "sha256": "08525039ea928bce66e04df0369ba896c6a7130a01f0fc7c4802fb6e8d402edb"
         },
         {
           "file": "instincts.json",
-          "sha256": "de6c5419e9a0dab9114980d8c44ed0ad5fba2b7c679ccee965c94425b9a95636"
+          "sha256": "c44de8481a25fa11736980d295545f4f81bd0dce57d8d30e8c05888500adb83b"
         },
         {
           "file": "merge_guard.py",
@@ -61,7 +65,7 @@
         },
         {
           "file": "session_end.py",
-          "sha256": "d86f387db04ab16d8572692f128ccf3e5d95fca529fca2da0340526b5a992c81"
+          "sha256": "58853b87be11309e5c60bf4925a7d4665333f0c26106f0369a06002e1283133d"
         },
         {
           "file": "session_start.py",
@@ -88,12 +92,12 @@
       ]
     },
     "ci_gates": {
-      "version": 2,
+      "version": 10,
       "kind": "tool",
       "files": [
         {
           "file": "ambient_branch.py",
-          "sha256": "a66147cefc713e798685e8db538bd44dd18ed29533ab9ebc2ec1dcdafdac0904"
+          "sha256": "732bbcab77ef1d77ccb017d0df9fbaf5c5f67bde317cf838690af94f20ff5ad3"
         },
         {
           "file": "backlog_check.py",
@@ -101,7 +105,7 @@
         },
         {
           "file": "ci_baseline.py",
-          "sha256": "e384bc61946658e1f4159748f3d1abbff6d3b246782d1808516a0dfb275a1b27"
+          "sha256": "ad8b5c75da047decae6d83a5baf747c8df28cef7c332fd9ead7fdab7363f74ef"
         },
         {
           "file": "duration_budget.py",
@@ -112,16 +116,24 @@
           "sha256": "3e7d7741b5b249b64db6c898bc6674e3a1893c46f52598213ecc765cda933e67"
         },
         {
+          "file": "gate_skip_log.py",
+          "sha256": "7e44f2c60c29d986a83760eabed16676b9fff3d8155cbd5b48c551f8103a92a2"
+        },
+        {
+          "file": "generated_check.py",
+          "sha256": "b07eb097774bbf5f91f169134b3a6f0579fa1702e42703e6a018060bf6a84760"
+        },
+        {
           "file": "skip_audit.py",
-          "sha256": "c056a5b2271532181df31f1a5281c04e6ada1166fe2bd53ca306aea135d8d984"
+          "sha256": "4b245f599671423dcb3e5338f51fa26e8ea37554e32f26539e0c2c3970b34bb3"
         },
         {
           "file": "sweep_guard.py",
-          "sha256": "a7862ba96e47f370f5d574de78a791303ffbec522f619b5e059cc0e185d36fc2"
+          "sha256": "30dd8135b6ecaff7db3acf866587fcdc949bc7a4e6566d63ccf27799713bf935"
         },
         {
           "file": "verify_checkout.py",
-          "sha256": "c2a2f452f8b7b51cbccce70b0fca0cf30ba7b3715b6d7c93f4fcb2f071548f39"
+          "sha256": "50c69b1a9c2962917f6a0398d2e310e55a386632bae89480f7e6f4460c62f576"
         }
       ]
     },
@@ -173,7 +185,7 @@
       "path": "static/vendor/map_kit"
     },
     "table_kit": {
-      "version": 3,
+      "version": 4,
       "kind": "ui",
       "files": [
         {
@@ -182,7 +194,7 @@
         },
         {
           "file": "table_kit.js",
-          "sha256": "a91a1d68abfdbf4647bfd564e5be14069c30f60a0bf7ee1911ee57154548bd04"
+          "sha256": "86793ac2b1bb92f85b9ae0b7fd77b5b4b16df24bede8c4319fed0ea98dd89aa5"
         }
       ],
       "path": "static/vendor/table_kit"
@@ -202,7 +214,7 @@
       },
       {
         "file": "designer.md",
-        "sha256": "54cc61a3f537b9e73971ab00122f5e5878b019412e68da62cc0684904d6675f5"
+        "sha256": "6c5240bb8ad9fbbf06deddb0f6467ea6fe9ac0dd9fcb80552ca0ef69bce98279"
       },
       {
         "file": "copywriter.md",
@@ -222,11 +234,11 @@
       },
       {
         "file": "requirements-gopher.md",
-        "sha256": "213c09ccb293996e32ab020c5cfe93830eb74d6a93a9a7c812786111b2e9d193"
+        "sha256": "55bab2b4d32c6979a157ca458dfed7fbd81823b849518c21305c7b9ec4143cc1"
       },
       {
         "file": "housekeeper.md",
-        "sha256": "ea973433467a8227b47c71d0ad344165eae28b981a41a563de26eac3e235871d"
+        "sha256": "c726fc6d9ce2840b35fc9d75dbb3feb1eda9669a3cb4dda0ba71ab210f888ba3"
       },
       {
         "file": "fault-analyst.md",
@@ -234,11 +246,11 @@
       },
       {
         "file": "gate-auditor.md",
-        "sha256": "d77605d47ba5f09ebf99f56b885f4f281048534e05ef107864d3b5a8a6bc155b"
+        "sha256": "15b22bba39c2a308d29afa08204365f65c4da2fad9aa5cbc094d61ade702b467"
       },
       {
         "file": "scrum-master.md",
-        "sha256": "859ee8abd73cc736fbff0a83aa2065bca47f552acd9618765de1ad276d0622d2"
+        "sha256": "18948e21dcf8be3db76f65841d39d91c742a7c3c4b3bd0b0c4481f178e067f0e"
       },
       {
         "file": "sprint-reviewer.md",
